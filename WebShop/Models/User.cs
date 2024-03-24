@@ -5,8 +5,6 @@ namespace WebShop.Models
 {
     public class User: IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -17,5 +15,8 @@ namespace WebShop.Models
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public string Avatar {  get; set; }
+        public ICollection<Order> Orders { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }
