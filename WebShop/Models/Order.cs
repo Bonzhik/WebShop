@@ -12,6 +12,8 @@ namespace WebShop.Models
         [Required]
         public User User { get; set; }
         [Required]
+        public Status Status { get; set; }
+        [Required]
         public ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using WebShop.Data;
 namespace WebShop.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240324103351_Init")]
-    partial class Init
+    [Migration("20240324213617_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,11 +293,16 @@ namespace WebShop.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
 
                     b.HasIndex("UserId");
 
@@ -356,6 +361,23 @@ namespace WebShop.Migrations
                     b.HasIndex("SubcategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("WebShop.Models.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("WebShop.Models.Subcategory", b =>
@@ -600,11 +622,19 @@ namespace WebShop.Migrations
 
             modelBuilder.Entity("WebShop.Models.Order", b =>
                 {
+                    b.HasOne("WebShop.Models.Status", "Status")
+                        .WithMany("Orders")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WebShop.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Status");
 
                     b.Navigation("User");
                 });
@@ -684,6 +714,11 @@ namespace WebShop.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("WebShop.Models.Status", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("WebShop.Models.Subcategory", b =>
