@@ -1,4 +1,4 @@
-﻿namespace WebShop.Models
+﻿wnamespace WebShop.Models
 {
     public class Subcategory
     {
