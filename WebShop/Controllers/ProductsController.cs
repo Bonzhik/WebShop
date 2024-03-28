@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
+using WebShop.Dtos.Write;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Controllers
@@ -18,6 +19,12 @@ namespace WebShop.Controllers
         {
             List<ProductR> productDtos = await _productService.GetAllAsync();
             return Ok(productDtos);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(ProductW productDto)
+        {
+            await _productService.AddAsync(productDto);
+            return Ok();
         }
     }
 }

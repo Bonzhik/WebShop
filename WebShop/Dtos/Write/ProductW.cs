@@ -12,5 +12,6 @@ namespace WebShop.Dtos.Write
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public int SubcategoryId { get; set; }
+        public Dictionary<int, string> AttributeValues { get; set; }
     }
 }

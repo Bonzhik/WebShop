@@ -17,6 +17,6 @@ namespace WebShop.Models
         [Required]
         public virtual Feedback Feedback { get; set; }
         public virtual Comment? ParentComment { get; set; }
-        public virtual ICollection<Comment> Comments { get; set;}
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

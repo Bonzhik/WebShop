@@ -21,12 +21,18 @@ namespace WebShop.Data
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Models.Attribute> Attributes { get; set; }
+        public DbSet<AttributeValue> AttributeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.LoginProvider, p.ProviderKey });
+
+            modelBuilder.Entity<Category>()
+                .HasMany(e => e.Attributes)
+                .WithMany(e => e.Categories);
 
             modelBuilder.Entity<OrderProduct>()
                 .HasKey(pc => new { pc.OrderId, pc.ProductId });
@@ -40,6 +46,7 @@ namespace WebShop.Data
                 .WithMany(pc => pc.OrderProducts)
                 .HasForeignKey(p => p.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<CartProduct>()
                 .HasKey(pc => new { pc.CartId, pc.ProductId });
             modelBuilder.Entity<CartProduct>()
@@ -52,6 +59,19 @@ namespace WebShop.Data
                 .WithMany(pc => pc.CartProducts)
                 .HasForeignKey(p => p.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AttributeValue>()
+                .HasKey(pc => new { pc.AttributeId, pc.ProductId });
+            modelBuilder.Entity<AttributeValue>()
+                .HasOne(p => p.Attribute)
+                .WithMany(pc => pc.AttributeValues)
+                .HasForeignKey(p => p.AttributeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<AttributeValue>()
+                .HasOne(p => p.Product)
+                .WithMany(pc => pc.AttributeValues)
+                .HasForeignKey(p => p.ProductId);
+
         }
     }
 

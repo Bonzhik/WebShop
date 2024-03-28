@@ -8,10 +8,14 @@ namespace WebShop.Helpers
     public class Mapper : Profile
     {
         public Mapper() {
+
             CreateMap<Product, ProductR>()
                 .ForMember(dest => dest.Subcategory, opt => opt.MapFrom(src => src.Subcategory.Title))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Subcategory.Category.Title));
-            CreateMap<ProductW, Product>();
+
+            CreateMap<ProductW, Product>()
+                .ForMember(dest => dest.AttributeValues, opt => opt.Ignore());
+
             CreateMap<Subcategory, SubcategoryR>();
         }
     }

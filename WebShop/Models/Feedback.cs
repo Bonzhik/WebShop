@@ -14,6 +14,6 @@ namespace WebShop.Models
         public virtual User User { get; set; }
         [Required]
         public virtual Product Product { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

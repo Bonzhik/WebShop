@@ -25,6 +25,21 @@ namespace WebShop.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("AttributeCategory", b =>
+                {
+                    b.Property<int>("AttributesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AttributesId", "CategoriesId");
+
+                    b.HasIndex("CategoriesId");
+
+                    b.ToTable("AttributeCategory");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -155,6 +170,42 @@ namespace WebShop.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("WebShop.Models.Attribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Attributes");
+                });
+
+            modelBuilder.Entity("WebShop.Models.AttributeValue", b =>
+                {
+                    b.Property<int>("AttributeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("AttributeId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("AttributeValues");
                 });
 
             modelBuilder.Entity("WebShop.Models.Cart", b =>
@@ -487,6 +538,21 @@ namespace WebShop.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("AttributeCategory", b =>
+                {
+                    b.HasOne("WebShop.Models.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebShop.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -536,6 +602,25 @@ namespace WebShop.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebShop.Models.AttributeValue", b =>
+                {
+                    b.HasOne("WebShop.Models.Attribute", "Attribute")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("AttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebShop.Models.Product", "Product")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attribute");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("WebShop.Models.Cart", b =>
@@ -680,6 +765,11 @@ namespace WebShop.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("WebShop.Models.Attribute", b =>
+                {
+                    b.Navigation("AttributeValues");
+                });
+
             modelBuilder.Entity("WebShop.Models.Cart", b =>
                 {
                     b.Navigation("CartProducts");
@@ -707,6 +797,8 @@ namespace WebShop.Migrations
 
             modelBuilder.Entity("WebShop.Models.Product", b =>
                 {
+                    b.Navigation("AttributeValues");
+
                     b.Navigation("CartProducts");
 
                     b.Navigation("Comments");

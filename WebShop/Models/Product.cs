@@ -17,9 +17,10 @@ namespace WebShop.Models
         public decimal Price { get; set; }
         [Required]
         public virtual Subcategory Subcategory { get; set; }
-        public virtual ICollection<Feedback> Feedbacks { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
-        public virtual ICollection<CartProduct> CartProducts { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
+        public virtual ICollection<AttributeValue> AttributeValues { get; set; } = new List<AttributeValue>();
     }
 }

@@ -8,6 +8,6 @@ namespace WebShop.Dtos.Write
         public int Id { get; set; }
         public string Address { get; set; }
         public int UserId { get; set; }
-        public int[,] OrderProducts { get; set; }
+        public Dictionary<int, int> OrderProducts { get; set; }
     }
 }

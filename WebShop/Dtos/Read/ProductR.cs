@@ -13,5 +13,6 @@ namespace WebShop.Dtos.Read
         public double Rating { get; set; }
         public string Category {  get; set; }
         public string Subcategory { get; set; }
+        public List<AttributeItem> Attributes { get; set; } = new List<AttributeItem>();
     }
 }

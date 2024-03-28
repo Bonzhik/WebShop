@@ -15,18 +15,21 @@ namespace WebShop.Services.Implementations
         private readonly ISubcategoryRepository _subcategoryRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+        private readonly IAttributeRepository _attributeRepository;
 
         public ProductService
             (
             IProductRepository productRepository, 
             ISubcategoryRepository subcategoryRepository,
             ICategoryRepository categoryRepository,
+            IAttributeRepository attributeRepository,
             IMapper mapper
             )
         {
             _productRepository = productRepository;
             _subcategoryRepository = subcategoryRepository;
             _categoryRepository = categoryRepository;
+            _attributeRepository = attributeRepository;
             _mapper = mapper;
         }
 
@@ -49,7 +52,7 @@ namespace WebShop.Services.Implementations
 
             foreach (Product product in products)
             {
-                productDtos.Add(MapToDto(product));
+                productDtos.Add(await MapToDto(product));
             }
 
             return productDtos;
@@ -69,7 +72,7 @@ namespace WebShop.Services.Implementations
 
             foreach (Product product in products)
             {
-                productDtos.Add(MapToDto(product));
+                productDtos.Add(await MapToDto(product));
             }
 
             return productDtos;
@@ -83,7 +86,7 @@ namespace WebShop.Services.Implementations
 
             foreach (Product product in products)
             {
-                productDtos.Add(MapToDto(product));
+                productDtos.Add(await MapToDto(product));
             }
 
             return productDtos;
@@ -98,13 +101,35 @@ namespace WebShop.Services.Implementations
         private async Task<Product> MapFromDto(ProductW productDto)
         {
             Product product = _mapper.Map<Product>(productDto);
+
             product.Subcategory = await _subcategoryRepository.GetAsync(productDto.SubcategoryId);
+
+            foreach(var attribute in productDto.AttributeValues)
+            {
+                product.AttributeValues.Add(new AttributeValue()
+                {
+                    Product = product,
+                    Attribute = await _attributeRepository.GetAsync(attribute.Key),
+                    Value = attribute.Value
+                });
+            }
+
             return product;
         }
 
-        private ProductR MapToDto(Product product)
+        private async Task<ProductR> MapToDto(Product product)
         {
             ProductR productDto = _mapper.Map<ProductR>(product);
+
+            List<AttributeValue> attributes = await _attributeRepository.GetByProductAsync(product);
+            foreach(var attribute in attributes)
+            {
+                productDto.Attributes.Add(new AttributeItem
+                {
+                    Title = attribute.Attribute.Title,
+                    Value = attribute.Value
+                });
+            }
             return productDto;
         }
     }
