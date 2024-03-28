@@ -11,9 +11,9 @@ namespace WebShop.Models
         public string Text { get; set; }
         public int Rating { get; set; }
         [Required]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         [Required]
-        public Product Product { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+        public virtual Product Product { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

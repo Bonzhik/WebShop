@@ -10,6 +10,6 @@ namespace WebShop.Models
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
-        public ICollection<Subcategory> Subcategories { get; set; }
+        public virtual ICollection<Subcategory> Subcategories { get; set; }
     }
 }

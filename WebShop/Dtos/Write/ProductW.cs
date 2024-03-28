@@ -5,6 +5,7 @@ namespace WebShop.Dtos.Write
 {
     public class ProductW
     {
+        public int Id { get; set; } 
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }

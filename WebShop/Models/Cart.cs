@@ -8,8 +8,8 @@ namespace WebShop.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public User User { get; set; }
-        public ICollection<CartProduct> CartProducts { get; set; }
+        public virtual User User { get; set; }
+        public virtual ICollection<CartProduct> CartProducts { get; set; }
 
     }
 }

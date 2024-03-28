@@ -16,10 +16,10 @@ namespace WebShop.Models
         [Required]
         public decimal Price { get; set; }
         [Required]
-        public Subcategory Subcategory { get; set; }
-        public ICollection<Feedback> Feedbacks { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-        public ICollection<OrderProduct> OrderProducts { get; set; }
-        public ICollection<CartProduct> CartProducts { get; set; }
+        public virtual Subcategory Subcategory { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+        public virtual ICollection<CartProduct> CartProducts { get; set; }
     }
 }

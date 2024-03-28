@@ -14,9 +14,14 @@ namespace WebShop.Repositories.Implementations
             _db = db;
         }
 
-        public async Task<List<Category>> GetAll()
+        public async Task<List<Category>> GetAllAsync()
         {
             return await _db.Categories.ToListAsync();
+        }
+
+        public async Task<Category> GetAsync(int id)
+        {
+            return await _db.Categories.FindAsync(id);
         }
 
         public async Task<bool> SaveAsync()

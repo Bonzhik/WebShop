@@ -7,7 +7,7 @@ namespace WebShop.Dtos.Read
         public int Id { get; set; }
         public int Rating { get; set; }
         public string Text { get; set; }
-        public UserR User { get; set; }
+        //public UserR User { get; set; }
         public List<CommentR>? Comments { get; set; }
     }
 }

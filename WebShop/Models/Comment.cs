@@ -11,12 +11,12 @@ namespace WebShop.Models
         [MinLength(20)]
         public string Text { get; set; }
         [Required]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         [Required]
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         [Required]
-        public Feedback Feedback { get; set; }
-        public Comment? ParentComment { get; set; }
-        public ICollection<Comment> Comments { get; set;}
+        public virtual Feedback Feedback { get; set; }
+        public virtual Comment? ParentComment { get; set; }
+        public virtual ICollection<Comment> Comments { get; set;}
     }
 }

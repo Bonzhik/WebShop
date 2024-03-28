@@ -7,10 +7,10 @@ namespace WebShop.Models
     {
         public int CartId { get; set; }
         [Required]
-        public Cart Cart { get; set; }
+        public virtual Cart Cart { get; set; }
         public int ProductId { get; set; }
         [Required]
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         public int Quantity { get; set; }
     }
 }

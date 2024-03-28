@@ -10,10 +10,10 @@ namespace WebShop.Models
         [Required]
         public string Address { get; set; }
         [Required]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         [Required]
-        public Status Status { get; set; }
+        public virtual Status Status { get; set; }
         [Required]
-        public ICollection<OrderProduct> OrderProducts { get; set; }
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }
