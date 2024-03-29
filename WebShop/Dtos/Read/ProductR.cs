@@ -11,8 +11,9 @@ namespace WebShop.Dtos.Read
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public double Rating { get; set; }
-        public string Category {  get; set; }
-        public string Subcategory { get; set; }
+        public int CategoryId {  get; set; }
+        public string CategoryTitle {  get; set; }
+        public string SubcategoryTitle { get; set; }
         public List<AttributeItem> Attributes { get; set; } = new List<AttributeItem>();
     }
 }

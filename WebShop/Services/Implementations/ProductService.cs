@@ -121,12 +121,12 @@ namespace WebShop.Services.Implementations
         {
             ProductR productDto = _mapper.Map<ProductR>(product);
 
-            List<AttributeValue> attributes = await _attributeRepository.GetByProductAsync(product);
+            List<AttributeValue> attributes = await _attributeRepository.GetValuesByProductAsync(product);
             foreach(var attribute in attributes)
             {
                 productDto.Attributes.Add(new AttributeItem
                 {
-                    Title = attribute.Attribute.Title,
+                    Attribute = _mapper.Map<AttributeR>(attribute.Attribute),
                     Value = attribute.Value
                 });
             }

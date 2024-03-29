@@ -2,7 +2,7 @@
 {
     public class AttributeItem
     {
-        public string Title { get; set; }
+        public AttributeR Attribute {  get; set; }
         public string Value { get; set; }
     }
 }

@@ -18,7 +18,15 @@ namespace WebShop.Repositories.Implementations
             return await _db.Attributes.FindAsync(id);
         }
 
-        public async Task<List<AttributeValue>> GetByProductAsync(Product product)
+        public async Task<List<Models.Attribute>> GetByCategoryAsync(Category category)
+        {
+            return await _db.Categories
+                .Where(c => c.Id == category.Id)
+                .SelectMany(c => c.Attributes)
+                .ToListAsync();
+        }
+
+        public async Task<List<AttributeValue>> GetValuesByProductAsync(Product product)
         {
             return await _db.AttributeValues.Where(a => a.Product.Equals(product)).ToListAsync();
         }

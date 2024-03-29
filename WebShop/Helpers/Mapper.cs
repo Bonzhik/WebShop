@@ -10,13 +10,16 @@ namespace WebShop.Helpers
         public Mapper() {
 
             CreateMap<Product, ProductR>()
-                .ForMember(dest => dest.Subcategory, opt => opt.MapFrom(src => src.Subcategory.Title))
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Subcategory.Category.Title));
+                .ForMember(dest => dest.SubcategoryTitle, opt => opt.MapFrom(src => src.Subcategory.Title))
+                .ForMember(dest => dest.CategoryTitle, opt => opt.MapFrom(src => src.Subcategory.Category.Title))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Subcategory.Category.Id));
 
             CreateMap<ProductW, Product>()
                 .ForMember(dest => dest.AttributeValues, opt => opt.Ignore());
 
             CreateMap<Subcategory, SubcategoryR>();
+            CreateMap<Category, CategoryR>();
+            CreateMap<Models.Attribute, AttributeR>();
         }
     }
 }

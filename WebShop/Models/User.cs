@@ -15,6 +15,7 @@ namespace WebShop.Models
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public string Avatar {  get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();    
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

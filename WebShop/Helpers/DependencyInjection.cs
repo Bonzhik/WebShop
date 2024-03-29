@@ -19,6 +19,8 @@ namespace WebShop.Helpers
             service.AddScoped<IAttributeRepository, AttributeRepository>();
 
             service.AddScoped<IProductService, ProductService>();
+            service.AddScoped<ICategoryService, CategoryService>();
+            service.AddScoped<IAttributeService, AttributeService>();
         }
     }
 }
