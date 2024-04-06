@@ -26,7 +26,6 @@ namespace WebShop.Services.Implementations
             if (!Directory.Exists(avatarsDirectory)){
                 Directory.CreateDirectory(avatarsDirectory);
             }
-
             string fileName = userW.UserName + userW.avatar.FileName;
 
             user.Avatar = fileName;
@@ -48,10 +47,10 @@ namespace WebShop.Services.Implementations
             return result;
         }
 
+
         public async Task<SignInResult> Login(string username, string password, bool rememberMe)
         {
             var result = await _signInManager.PasswordSignInAsync(username, password, rememberMe, false);
-
             return result;
         }
 

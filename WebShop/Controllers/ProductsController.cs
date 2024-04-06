@@ -6,7 +6,7 @@ using WebShop.Services.Interfaces;
 namespace WebShop.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -20,6 +20,7 @@ namespace WebShop.Controllers
             List<ProductR> productDtos = await _productService.GetAllAsync();
             return Ok(productDtos);
         }
+
         [HttpPost]
         public async Task<IActionResult> Add(ProductW productDto)
         {

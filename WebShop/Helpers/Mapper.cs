@@ -17,6 +17,8 @@ namespace WebShop.Helpers
             CreateMap<ProductW, Product>()
                 .ForMember(dest => dest.AttributeValues, opt => opt.Ignore());
 
+            CreateMap<User, UserR>();
+            CreateMap<Feedback, FeedbackR>();
             CreateMap<Subcategory, SubcategoryR>();
             CreateMap<Category, CategoryR>();
             CreateMap<Models.Attribute, AttributeR>();

@@ -421,6 +421,9 @@ namespace WebShop.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
+                    b.Property<double>("Rating")
+                        .HasColumnType("double precision");
+
                     b.Property<int>("SubcategoryId")
                         .HasColumnType("integer");
 
@@ -483,7 +486,6 @@ namespace WebShop.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("BirthDate")

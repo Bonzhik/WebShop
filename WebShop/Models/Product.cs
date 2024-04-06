@@ -17,6 +17,7 @@ namespace WebShop.Models
         public decimal Price { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public double Rating { get; set; } = 0;
         public virtual Subcategory Subcategory { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

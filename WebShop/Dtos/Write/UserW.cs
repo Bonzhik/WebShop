@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+
 namespace WebShop.Dtos.Write
 {
     public class UserW
@@ -17,7 +19,6 @@ namespace WebShop.Dtos.Write
         public string password { get; set; }
 
         public string PhoneNumber { get; set; }
-
         public DateTime BirthDate { get; set; }
 
         public IFormFile avatar { get; set; }
