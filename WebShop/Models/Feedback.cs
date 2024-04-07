@@ -10,8 +10,8 @@ namespace WebShop.Models
         [MinLength(20)]
         public string Text { get; set; }
         public int Rating { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         [Required]
         public virtual User User { get; set; }
         [Required]

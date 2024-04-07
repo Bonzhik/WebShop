@@ -17,12 +17,14 @@ namespace WebShop.Helpers
             service.AddScoped<IOrderRepository, OrderRepository>();
             service.AddScoped<ISubcategoryRepository, SubcategoryRepository>(); 
             service.AddScoped<IAttributeRepository, AttributeRepository>();
+            service.AddScoped<IStatusRepository, StatusRepository>();
 
             service.AddScoped<IProductService, ProductService>();
             service.AddScoped<ICategoryService, CategoryService>();
             service.AddScoped<IAttributeService, AttributeService>();
             service.AddScoped<IFeedbackService, FeedbackService>();
             service.AddScoped<ICommentService, CommentService>();
+            service.AddScoped<IOrderService, OrderService>();
 
             service.AddScoped<IAccountService, AccountService>();
         }

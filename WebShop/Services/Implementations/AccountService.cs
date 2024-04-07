@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using WebShop.Dtos.Write;
 using WebShop.Models;
+using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Services.Implementations
@@ -10,13 +11,18 @@ namespace WebShop.Services.Implementations
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ICartRepository _cartRepository;
 
         private readonly string avatarsDirectory = "UsersAvatars";
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountService(
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager,
+            ICartRepository cartRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _cartRepository = cartRepository;   
         }
 
         public async Task<IdentityResult> Register(UserW userW)
@@ -33,6 +39,7 @@ namespace WebShop.Services.Implementations
 
             if (result.Succeeded)
             {
+                await _cartRepository.AddAsync(new Cart() { User = user });
                 await _signInManager.SignInAsync(user, false);
 
                 string path = Path.Combine(avatarsDirectory, fileName);

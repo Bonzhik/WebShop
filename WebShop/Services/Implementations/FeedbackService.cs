@@ -34,6 +34,8 @@ namespace WebShop.Services.Implementations
         public async Task<bool> AddAsync(FeedbackW feedbackDto)
         {
             Feedback feedback = await MapFromDto(feedbackDto);
+            feedback.CreatedAt = DateTime.UtcNow;
+            feedback.UpdatedAt = DateTime.UtcNow;
 
             if (await _feedbackRepository.AddAsync(feedback))
             {
@@ -97,6 +99,7 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(FeedbackW feedbackDto)
         {
             Feedback feedback = await MapFromDto(feedbackDto);
+            feedback.UpdatedAt = DateTime.UtcNow;
 
             if (await _feedbackRepository.UpdateAsync(feedback))
             {

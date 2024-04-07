@@ -34,6 +34,9 @@ namespace WebShop.Services.Implementations
         public async Task<bool> AddAsync(CommentW commentDto)
         {
             Comment comment = await MapFromDto(commentDto);
+            comment.CreatedAt = DateTime.UtcNow;
+            comment.UpdatedAt = DateTime.UtcNow;
+
             return await _commentRepository.AddAsync( comment );
         }
 
@@ -103,12 +106,15 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(CommentW commentDto)
         {
             Comment comment = await MapFromDto(commentDto);
+            comment.UpdatedAt = DateTime.UtcNow; 
+
             return await _commentRepository.UpdateAsync(comment);
         }
         private async Task<Comment> MapFromDto(CommentW commentDto)
         {
             Comment comment = new Comment
             {
+                Id = commentDto.Id,
                 Text = commentDto.Text,
                 User = await _userManager.FindByIdAsync(commentDto.UserId),
                 Feedback = await _feedbackRepository.GetAsync(commentDto.FeedbackId),

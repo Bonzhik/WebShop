@@ -10,6 +10,5 @@ namespace WebShop.Models
         [Required]
         public virtual User User { get; set; }
         public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
-
     }
 }
