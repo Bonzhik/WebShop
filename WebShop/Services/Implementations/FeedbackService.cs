@@ -130,7 +130,6 @@ namespace WebShop.Services.Implementations
             double rating =Math.Round(feedbacks.Average(x => x.Rating), 1);
 
             product.Rating = rating;
-            await Console.Out.WriteLineAsync($"{rating}");
             try
             {
                 await _productRepository.UpdateAsync(product);

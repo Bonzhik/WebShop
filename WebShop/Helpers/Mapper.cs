@@ -19,6 +19,7 @@ namespace WebShop.Helpers
 
             CreateMap<User, UserR>();
             CreateMap<Feedback, FeedbackR>();
+            CreateMap<Comment, CommentR>();
             CreateMap<Subcategory, SubcategoryR>();
             CreateMap<Category, CategoryR>();
             CreateMap<Models.Attribute, AttributeR>();

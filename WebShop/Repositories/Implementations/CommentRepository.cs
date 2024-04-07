@@ -43,7 +43,7 @@ namespace WebShop.Repositories.Implementations
         {
             return await _db.Comments.Where(c => c.User.Equals(user)).ToListAsync();
         }
-        public async Task<List<Comment>> GetByParrentCommentAsync(Comment comment)
+        public async Task<List<Comment>> GetByParentCommentAsync(Comment comment)
         {
             return await _db.Comments.Where(c => c.ParentComment.Equals(comment)).ToListAsync();
         }
