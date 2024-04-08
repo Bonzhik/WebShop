@@ -5,6 +5,7 @@ using WebShop.Dtos.Write;
 using WebShop.Models;
 using WebShop.Repositories.Implementations;
 using WebShop.Repositories.Interfaces;
+using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Services.Implementations
@@ -16,13 +17,15 @@ namespace WebShop.Services.Implementations
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly IAttributeRepository _attributeRepository;
+        private readonly IImageService _imageService;
 
         public ProductService
             (
-            IProductRepository productRepository, 
+            IProductRepository productRepository,
             ISubcategoryRepository subcategoryRepository,
             ICategoryRepository categoryRepository,
             IAttributeRepository attributeRepository,
+            IImageService imageService,
             IMapper mapper
             )
         {
@@ -30,12 +33,14 @@ namespace WebShop.Services.Implementations
             _subcategoryRepository = subcategoryRepository;
             _categoryRepository = categoryRepository;
             _attributeRepository = attributeRepository;
+            _imageService = imageService;
             _mapper = mapper;
         }
 
         public async Task<bool> AddAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+            product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
             return await _productRepository.AddAsync(product);
         }
 
@@ -95,6 +100,7 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+            product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
             return await _productRepository.UpdateAsync(product);
         }
 

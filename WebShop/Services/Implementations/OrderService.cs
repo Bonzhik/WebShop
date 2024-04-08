@@ -142,11 +142,8 @@ namespace WebShop.Services.Implementations
         }
         private decimal CalculateTotalPrice(Order order)
         {
-            var totalPrice = 0m; 
-            foreach (var orderItem in order.OrderProducts)
-            {
-                totalPrice += orderItem.Quantity * orderItem.Product.Price;
-            }
+            var totalPrice = 0m;
+            totalPrice = order.OrderProducts.Sum(item => item.Quantity * item.Product.Price);
             return totalPrice;
         }
     }

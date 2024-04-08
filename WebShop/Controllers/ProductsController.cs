@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
+using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Controllers
@@ -10,9 +11,11 @@ namespace WebShop.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        public ProductsController(IProductService productService)
+        private readonly IImageService _imageService;
+        public ProductsController(IProductService productService, IImageService imageService)
         {
             _productService = productService;
+            _imageService = imageService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()

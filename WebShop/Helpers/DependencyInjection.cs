@@ -1,5 +1,6 @@
 ﻿using WebShop.Repositories.Implementations;
 using WebShop.Repositories.Interfaces;
+using WebShop.Services.ImageService;
 using WebShop.Services.Implementations;
 using WebShop.Services.Interfaces;
 
@@ -25,6 +26,8 @@ namespace WebShop.Helpers
             service.AddScoped<IFeedbackService, FeedbackService>();
             service.AddScoped<ICommentService, CommentService>();
             service.AddScoped<IOrderService, OrderService>();
+            service.AddScoped<IImageService, ImageService>();
+            service.AddHttpClient<ImageService>();
 
             service.AddScoped<IAccountService, AccountService>();
         }
