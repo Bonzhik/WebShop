@@ -21,6 +21,6 @@ namespace WebShop.Dtos.Write
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
 
-        public IFormFile avatar { get; set; }
+        public IFormFile? avatar { get; set; }
     }
 }

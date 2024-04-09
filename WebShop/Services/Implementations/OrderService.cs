@@ -85,7 +85,6 @@ namespace WebShop.Services.Implementations
         {
             Order order = await MapFromDto(orderDto);
             order.UpdatedAt = DateTime.UtcNow;
-            order.TotalPrice = CalculateTotalPrice(order);
 
             return await _orderRepository.UpdateAsync(order);
         }
