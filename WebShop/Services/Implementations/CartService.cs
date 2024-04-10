@@ -28,7 +28,10 @@ namespace WebShop.Services.Implementations
         {
             User user = await _userManager.FindByIdAsync( userId );
             Cart cart = await _cartRepository.GetByUserAsync(user);
+
             cart.CartProducts.Clear();
+            await _cartRepository.SaveAsync();
+
             if ( cart != null )
             {
                 return false;
@@ -40,8 +43,11 @@ namespace WebShop.Services.Implementations
         {
             User user = await _userManager.FindByIdAsync(userId);
             Cart cart = await _cartRepository.GetByUserAsync(user);
-            return MapToDto( cart );
-            
+
+            CartR cartDto = MapToDto(cart);
+            cartDto.TotalPrice = CalculateTotalPrice(cartDto);
+
+            return cartDto;
         }
 
         public async Task<bool> UpdateAsync(CartW cartDto)
@@ -72,7 +78,7 @@ namespace WebShop.Services.Implementations
         }
         private CartR MapToDto(Cart cart)
         {
-            CartR cartDto = new CartR();
+            CartR cartDto = new CartR { Id = cart.Id};
             cartDto.CartItems = cart.CartProducts
                 .Select(c => new OrderItemR
                 {
@@ -83,6 +89,12 @@ namespace WebShop.Services.Implementations
                     Quantity = c.Quantity
                 }).ToList();
             return cartDto;
+        }
+        private decimal CalculateTotalPrice(CartR cartDto)
+        {
+            var totalPrice = 0m;
+            totalPrice = cartDto.CartItems.Sum(item => item.Quantity * item.Price);
+            return totalPrice;
         }
     }
 }

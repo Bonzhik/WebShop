@@ -22,6 +22,13 @@ DependencyInjection.ConfigureDI(builder.Services);
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    dbContext.Database.Migrate();
+    SeedData.Init(dbContext);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

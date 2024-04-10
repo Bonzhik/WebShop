@@ -9,7 +9,6 @@ namespace WebShop.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            this.Database.Migrate();
         }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartProduct> CartProducts { get; set; }
