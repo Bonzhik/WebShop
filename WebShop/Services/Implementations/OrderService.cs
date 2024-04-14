@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
@@ -36,6 +37,13 @@ namespace WebShop.Services.Implementations
             Order order = await MapFromDto( orderDto );
             order.CreatedAt = DateTime.UtcNow;
             order.UpdatedAt = DateTime.UtcNow;
+            foreach (var orderItem in order.OrderProducts)
+            {
+                if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
+                {
+                    throw new NotEnoughProductException($"Недостаточно товаров {orderItem.Product.Title}");
+                }
+            }
             order.TotalPrice = CalculateTotalPrice(order);
 
             return await _orderRepository.AddAsync( order );
@@ -85,7 +93,13 @@ namespace WebShop.Services.Implementations
         {
             Order order = await MapFromDto(orderDto);
             order.UpdatedAt = DateTime.UtcNow;
-
+            foreach (var orderItem in order.OrderProducts)
+            {
+                if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
+                {
+                    throw new NotEnoughProductException($"Недостаточно товаров {orderItem.Product.Title}");
+                }
+            }
             return await _orderRepository.UpdateAsync(order);
         }
         private async Task<Order> MapFromDto(OrderW orderDto)

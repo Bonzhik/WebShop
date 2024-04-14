@@ -48,5 +48,10 @@ namespace WebShop.Repositories.Implementations
         {
             return await _db.SaveChangesAsync() > 0 ? true : false;
         }
+
+        public bool CheckEnoughProduct(Product product, int Quantity)
+        {
+            return product.Quantity > Quantity;
+        }
     }
 }

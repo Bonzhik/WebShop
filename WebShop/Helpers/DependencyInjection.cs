@@ -3,6 +3,7 @@ using WebShop.Repositories.Interfaces;
 using WebShop.Services.ImageService;
 using WebShop.Services.Implementations;
 using WebShop.Services.Interfaces;
+using WebShop.Services.PaginationService;
 
 namespace WebShop.Helpers
 {
@@ -27,6 +28,7 @@ namespace WebShop.Helpers
             service.AddScoped<ICommentService, CommentService>();
             service.AddScoped<IOrderService, OrderService>();
             service.AddScoped<IImageService, ImageService>();
+            service.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
             service.AddHttpClient<ImageService>();
 
             service.AddScoped<IAccountService, AccountService>();

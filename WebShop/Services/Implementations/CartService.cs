@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
@@ -53,6 +54,13 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(CartW cartDto)
         {
             Cart cart = await MapFromDto(cartDto);
+            foreach (var orderItem in cart.CartProducts)
+            {
+                if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
+                {
+                    throw new NotEnoughProductException($"Недостаточно товаров {orderItem.Product.Title}");
+                }
+            }
             return await _cartRepository.UpdateAsync( cart );
         }
         private async Task<Cart> MapFromDto(CartW cartDto)
