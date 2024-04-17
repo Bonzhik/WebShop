@@ -29,6 +29,11 @@ namespace WebShop.Data
 
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.LoginProvider, p.ProviderKey });
 
+            modelBuilder.Entity<Cart>()
+            .HasOne(c => c.User)
+            .WithOne(u => u.Cart)
+            .HasForeignKey<Cart>(c => c.UserId);
+
             modelBuilder.Entity<Category>()
                 .HasMany(e => e.Attributes)
                 .WithMany(e => e.Categories);
@@ -47,11 +52,11 @@ namespace WebShop.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CartProduct>()
-                .HasKey(pc => new { pc.CartId, pc.ProductId });
+                .HasKey(pc => new { pc.UserId, pc.ProductId });
             modelBuilder.Entity<CartProduct>()
                 .HasOne(p => p.Cart)
                 .WithMany(pc => pc.CartProducts)
-                .HasForeignKey(p => p.CartId)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<CartProduct>()
                 .HasOne(p => p.Product)

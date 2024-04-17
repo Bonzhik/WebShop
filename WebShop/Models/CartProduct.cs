@@ -5,7 +5,7 @@ namespace WebShop.Models
 {
     public class CartProduct
     {
-        public int CartId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public virtual Cart Cart { get; set; }
         public int ProductId { get; set; }

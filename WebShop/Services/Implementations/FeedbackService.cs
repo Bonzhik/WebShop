@@ -125,6 +125,8 @@ namespace WebShop.Services.Implementations
         {
             FeedbackR feedbackR = _mapper.Map<FeedbackR>(feedback);
             feedbackR.User = _mapper.Map<UserR>(feedbackR.User); 
+            feedbackR.HaveComments = feedback.Comments.Any() ? true : false;    
+
             return feedbackR;
         }
         private async Task<double> CalcRating(Product product)

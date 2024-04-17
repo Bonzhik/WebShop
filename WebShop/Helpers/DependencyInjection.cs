@@ -29,6 +29,7 @@ namespace WebShop.Helpers
             service.AddScoped<IOrderService, OrderService>();
             service.AddScoped<IImageService, ImageService>();
             service.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
+            service.AddScoped<ICartService, CartService>();
             service.AddHttpClient<ImageService>();
 
             service.AddScoped<IAccountService, AccountService>();

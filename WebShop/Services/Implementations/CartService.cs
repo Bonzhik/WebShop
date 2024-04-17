@@ -67,7 +67,7 @@ namespace WebShop.Services.Implementations
         {
             Cart cart = new Cart
             {
-                Id = cartDto.Id,
+                UserId = cartDto.UserId,    
                 User = await _userManager.FindByIdAsync(cartDto.UserId),
             };
             foreach (var cartItem in cartDto.CartProducts)
@@ -86,7 +86,7 @@ namespace WebShop.Services.Implementations
         }
         private CartR MapToDto(Cart cart)
         {
-            CartR cartDto = new CartR { Id = cart.Id};
+            CartR cartDto = new CartR();
             cartDto.CartItems = cart.CartProducts
                 .Select(c => new OrderItemR
                 {

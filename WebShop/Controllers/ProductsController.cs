@@ -31,10 +31,28 @@ namespace WebShop.Controllers
             return Ok(productDtos);
         }
         [HttpGet("GetPagination")]
-        public async Task<IActionResult> PaginationGet([FromQuery] int page, int pageSize)
+        public async Task<IActionResult> PaginationGet([FromQuery] int page, int pageSize, string orderBy)
         {
             List<ProductR> products = await _productService.GetAllAsync();
-            PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize); 
+            PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
+
+            switch (orderBy)
+            {
+                case "priceAsc":
+                    result.Data = result.Data.OrderBy(x => x.Price).ToList();
+                    break;
+                case "priceDesc":
+                    result.Data = result.Data.OrderByDescending(x => x.Price).ToList();
+                    break;
+                case "ratingAsc":
+                    result.Data = result.Data.OrderBy(x => x.Rating).ToList();
+                    break;
+                case "ratingDesc":
+                    result.Data = result.Data.OrderByDescending(x => x.Rating).ToList();
+                    break;
+                case "":
+                    break;
+            }
 
             return Ok(result);
         }

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WebShop.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -206,13 +206,11 @@ namespace WebShop.Migrations
                 name: "Carts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.PrimaryKey("PK_Carts", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Carts_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -350,18 +348,18 @@ namespace WebShop.Migrations
                 name: "CartProducts",
                 columns: table => new
                 {
-                    CartId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartProducts", x => new { x.CartId, x.ProductId });
+                    table.PrimaryKey("PK_CartProducts", x => new { x.UserId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_CartProducts_Carts_CartId",
-                        column: x => x.CartId,
+                        name: "FK_CartProducts_Carts_UserId",
+                        column: x => x.UserId,
                         principalTable: "Carts",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CartProducts_Products_ProductId",
@@ -519,11 +517,6 @@ namespace WebShop.Migrations
                 name: "IX_CartProducts_ProductId",
                 table: "CartProducts",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Carts_UserId",
-                table: "Carts",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_FeedbackId",

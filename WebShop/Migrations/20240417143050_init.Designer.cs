@@ -12,8 +12,8 @@ using WebShop.Data;
 namespace WebShop.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240410164817_Init")]
-    partial class Init
+    [Migration("20240417143050_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,27 +213,18 @@ namespace WebShop.Migrations
 
             modelBuilder.Entity("WebShop.Models.Cart", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId");
 
                     b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("WebShop.Models.CartProduct", b =>
                 {
-                    b.Property<int>("CartId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
@@ -241,7 +232,7 @@ namespace WebShop.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("CartId", "ProductId");
+                    b.HasKey("UserId", "ProductId");
 
                     b.HasIndex("ProductId");
 
@@ -658,8 +649,8 @@ namespace WebShop.Migrations
             modelBuilder.Entity("WebShop.Models.Cart", b =>
                 {
                     b.HasOne("WebShop.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Cart")
+                        .HasForeignKey("WebShop.Models.Cart", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -668,15 +659,15 @@ namespace WebShop.Migrations
 
             modelBuilder.Entity("WebShop.Models.CartProduct", b =>
                 {
-                    b.HasOne("WebShop.Models.Cart", "Cart")
-                        .WithMany("CartProducts")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WebShop.Models.Product", "Product")
                         .WithMany("CartProducts")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebShop.Models.Cart", "Cart")
+                        .WithMany("CartProducts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -852,6 +843,9 @@ namespace WebShop.Migrations
 
             modelBuilder.Entity("WebShop.Models.User", b =>
                 {
+                    b.Navigation("Cart")
+                        .IsRequired();
+
                     b.Navigation("Comments");
 
                     b.Navigation("Feedbacks");

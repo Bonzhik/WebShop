@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Services.Interfaces;
+using WebShop.Services.PaginationService;
 
 namespace WebShop.Controllers
 {
@@ -10,15 +12,22 @@ namespace WebShop.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly ICommentService _commentService;
-        public CommentsController(ICommentService commentService)
+        private readonly IPaginationService<CommentR> _paginationsService;
+        public CommentsController
+            (
+            ICommentService commentService,
+            IPaginationService<CommentR>  paginationService
+            )
         {
+            _paginationsService = paginationService;
             _commentService = commentService;
         }
         [HttpGet]   
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll([FromQuery] int page, int pageSize) 
         {
             List<CommentR> comments = await _commentService.GetAllAsync();
-            return Ok(comments);
+            PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
+            return Ok(result);
         }
         [HttpPost]
         public async Task<IActionResult> Add(CommentW comment)
