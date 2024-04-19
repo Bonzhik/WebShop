@@ -8,6 +8,7 @@ namespace WebShop.Repositories.Interfaces
         Task<List<Feedback>> GetAllAsync();
         Task<List<Feedback>> GetByUserAsync(User user);
         Task<List<Feedback>> GetByProductAsync(Product product);
+        Task<bool> IsExists(Feedback feedback);
         Task<bool> AddAsync(Feedback feedback);
         Task<bool> UpdateAsync(Feedback feedback);
         Task<bool> DeleteAsync(Feedback feedback);

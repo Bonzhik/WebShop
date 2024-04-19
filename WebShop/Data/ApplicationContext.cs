@@ -30,9 +30,9 @@ namespace WebShop.Data
             modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.LoginProvider, p.ProviderKey });
 
             modelBuilder.Entity<Cart>()
-            .HasOne(c => c.User)
-            .WithOne(u => u.Cart)
-            .HasForeignKey<Cart>(c => c.UserId);
+                .HasOne(c => c.User)
+                .WithOne(u => u.Cart)
+                .HasForeignKey<Cart>(c => c.UserId);
 
             modelBuilder.Entity<Category>()
                 .HasMany(e => e.Attributes)
@@ -48,8 +48,7 @@ namespace WebShop.Data
             modelBuilder.Entity<OrderProduct>()
                 .HasOne(p => p.Product)
                 .WithMany(pc => pc.OrderProducts)
-                .HasForeignKey(p => p.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(p => p.ProductId);
 
             modelBuilder.Entity<CartProduct>()
                 .HasKey(pc => new { pc.UserId, pc.ProductId });
@@ -61,8 +60,7 @@ namespace WebShop.Data
             modelBuilder.Entity<CartProduct>()
                 .HasOne(p => p.Product)
                 .WithMany(pc => pc.CartProducts)
-                .HasForeignKey(p => p.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(p => p.ProductId);
 
             modelBuilder.Entity<AttributeValue>()
                 .HasKey(pc => new { pc.AttributeId, pc.ProductId });
@@ -74,7 +72,8 @@ namespace WebShop.Data
             modelBuilder.Entity<AttributeValue>()
                 .HasOne(p => p.Product)
                 .WithMany(pc => pc.AttributeValues)
-                .HasForeignKey(p => p.ProductId);
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

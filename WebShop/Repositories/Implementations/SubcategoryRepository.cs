@@ -19,7 +19,16 @@ namespace WebShop.Repositories.Implementations
         }
         public async Task<bool> SaveAsync()
         {
-            return await _db.SaveChangesAsync() > 0 ? true : false;
+            try
+            {
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //Логирование ошибки
+                return false;
+            }
         }
     }
 }

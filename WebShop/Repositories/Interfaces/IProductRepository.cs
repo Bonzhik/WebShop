@@ -11,6 +11,7 @@ namespace WebShop.Repositories.Interfaces
         Task<bool> AddAsync(Product product);
         Task<bool> UpdateAsync(Product product);
         Task<bool> DeleteAsync(Product product);
+        Task<bool> IsExists(Product product);
         bool CheckEnoughProduct(Product product, int Quantity);
         Task<bool> SaveAsync();
     }

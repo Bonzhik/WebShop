@@ -4,6 +4,7 @@ using WebShop.Services.ImageService;
 using WebShop.Services.Implementations;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;
+using WebShop.Services.SortingService;
 
 namespace WebShop.Helpers
 {
@@ -29,6 +30,7 @@ namespace WebShop.Helpers
             service.AddScoped<IOrderService, OrderService>();
             service.AddScoped<IImageService, ImageService>();
             service.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
+            service.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
             service.AddScoped<ICartService, CartService>();
             service.AddHttpClient<ImageService>();
 

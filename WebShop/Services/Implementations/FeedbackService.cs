@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
@@ -37,6 +38,11 @@ namespace WebShop.Services.Implementations
             feedback.CreatedAt = DateTime.UtcNow;
             feedback.UpdatedAt = DateTime.UtcNow;
 
+            if (await _feedbackRepository.IsExists(feedback))
+            {
+                throw new AlreadyExistsException($"Отзыв к {feedback.Product.Id} от {feedback.User.Id} уже существует");
+            }
+
             if (await _feedbackRepository.AddAsync(feedback))
             {
                 await CalcRating(feedback.Product);
@@ -49,6 +55,12 @@ namespace WebShop.Services.Implementations
         public async Task<bool> DeleteAsync(int feedbackId)
         {
             Feedback feedback = await _feedbackRepository.GetAsync( feedbackId );
+
+            if (feedback == null)
+            {
+                throw new NotFoundException($"Отзыв {feedbackId} не найден");
+            }
+
             return await _feedbackRepository.DeleteAsync(feedback);
         }
 
@@ -135,14 +147,8 @@ namespace WebShop.Services.Implementations
             double rating =Math.Round(feedbacks.Average(x => x.Rating), 1);
 
             product.Rating = rating;
-            try
-            {
-                await _productRepository.UpdateAsync(product);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            await _productRepository.UpdateAsync(product);
+
             return rating;
         }
     }

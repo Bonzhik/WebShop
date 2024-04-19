@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;
+using WebShop.Services.SortingService;
 
 namespace WebShop.Controllers
 {
@@ -14,15 +16,18 @@ namespace WebShop.Controllers
         private readonly IProductService _productService;
         private readonly IImageService _imageService;
         private readonly IPaginationService<ProductR> _paginationService;
+        private readonly ISortingService<ProductR> _sortingService;
         public ProductsController
             (
             IProductService productService, 
             IImageService imageService,
-            IPaginationService<ProductR> paginationService)
+            IPaginationService<ProductR> paginationService,
+            ISortingService<ProductR> sortingService)
         {
             _productService = productService;
             _imageService = imageService;
             _paginationService = paginationService; 
+            _sortingService = sortingService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -30,28 +35,15 @@ namespace WebShop.Controllers
             List<ProductR> productDtos = await _productService.GetAllAsync();
             return Ok(productDtos);
         }
-        [HttpGet("GetPagination")]
-        public async Task<IActionResult> PaginationGet([FromQuery] int page, int pageSize, string orderBy)
+        [HttpGet("pagination")]
+        public async Task<IActionResult> PaginationGet([FromQuery] int page, int pageSize, string? sortField, string? sortOrder)
         {
             List<ProductR> products = await _productService.GetAllAsync();
             PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
 
-            switch (orderBy)
+            if (sortField != null && sortOrder != null) 
             {
-                case "priceAsc":
-                    result.Data = result.Data.OrderBy(x => x.Price).ToList();
-                    break;
-                case "priceDesc":
-                    result.Data = result.Data.OrderByDescending(x => x.Price).ToList();
-                    break;
-                case "ratingAsc":
-                    result.Data = result.Data.OrderBy(x => x.Rating).ToList();
-                    break;
-                case "ratingDesc":
-                    result.Data = result.Data.OrderByDescending(x => x.Rating).ToList();
-                    break;
-                case "":
-                    break;
+                result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);  
             }
 
             return Ok(result);

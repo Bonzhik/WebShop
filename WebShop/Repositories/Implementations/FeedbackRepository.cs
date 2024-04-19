@@ -46,9 +46,23 @@ namespace WebShop.Repositories.Implementations
             return await _db.Feedbacks.Where(f => f.User.Equals(user)).ToListAsync();
         }
 
+        public async Task<bool> IsExists(Feedback feedback)
+        {
+            return await _db.Feedbacks.AnyAsync(f => f.User.Id == feedback.User.Id && f.Product.Id == feedback.Product.Id);
+        }
+
         public async Task<bool> SaveAsync()
         {
-            return await _db.SaveChangesAsync() > 0 ? true : false;
+            try
+            {
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //Логирование ошибки
+                return false;
+            }
         }
 
         public async Task<bool> UpdateAsync(Feedback feedback)

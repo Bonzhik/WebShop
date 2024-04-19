@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
 using WebShop.Data;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
@@ -46,12 +47,26 @@ namespace WebShop.Repositories.Implementations
         }
         public async Task<bool> SaveAsync()
         {
-            return await _db.SaveChangesAsync() > 0 ? true : false;
+            try
+            {
+                await _db.SaveChangesAsync();
+                return true;
+            } catch (Exception ex)
+            {
+                //Логирование ошибки
+                return false;
+            }
         }
 
         public bool CheckEnoughProduct(Product product, int Quantity)
         {
             return product.Quantity > Quantity;
+        }
+
+        public async Task<bool> IsExists(Product product)
+        {
+            return await _db.Products.
+                AnyAsync(p => p.Title.ToLower() == product.Title.ToLower() && p.Id != product.Id);
         }
     }
 }

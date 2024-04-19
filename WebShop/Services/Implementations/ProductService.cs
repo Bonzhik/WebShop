@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Diagnostics;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Implementations;
 using WebShop.Repositories.Interfaces;
@@ -40,6 +42,10 @@ namespace WebShop.Services.Implementations
         public async Task<bool> AddAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+            if (await _productRepository.IsExists(product))
+            {
+                throw new AlreadyExistsException($"Продукт {productDto.Title} уже существует");
+            }
             product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
             return await _productRepository.AddAsync(product);
         }
@@ -100,6 +106,10 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+            if (await _productRepository.IsExists(product))
+            {
+                throw new AlreadyExistsException($"Продукт {productDto.Title} уже существует");
+            }
             product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
             return await _productRepository.UpdateAsync(product);
         }
