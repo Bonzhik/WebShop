@@ -7,7 +7,8 @@ namespace WebShop.Helpers
 {
     public class Mapper : Profile
     {
-        public Mapper() {
+        public Mapper()
+        {
 
             CreateMap<Product, ProductR>()
                 .ForMember(dest => dest.SubcategoryTitle, opt => opt.MapFrom(src => src.Subcategory.Title))

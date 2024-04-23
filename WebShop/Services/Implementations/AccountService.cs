@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using WebShop.Dtos.Write;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
@@ -16,20 +15,21 @@ namespace WebShop.Services.Implementations
         private readonly string avatarsDirectory = "UsersAvatars";
 
         public AccountService(
-            UserManager<User> userManager, 
+            UserManager<User> userManager,
             SignInManager<User> signInManager,
             ICartRepository cartRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _cartRepository = cartRepository;   
+            _cartRepository = cartRepository;
         }
 
         public async Task<IdentityResult> Register(UserW userW)
         {
             User user = MapFromDto(userW);
 
-            if (!Directory.Exists(avatarsDirectory)){
+            if (!Directory.Exists(avatarsDirectory))
+            {
                 Directory.CreateDirectory(avatarsDirectory);
             }
             string fileName = userW.UserName + userW.avatar.FileName;

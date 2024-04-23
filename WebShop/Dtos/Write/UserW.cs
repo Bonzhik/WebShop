@@ -1,8 +1,4 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
-
-namespace WebShop.Dtos.Write
+﻿namespace WebShop.Dtos.Write
 {
     public class UserW
     {

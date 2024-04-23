@@ -18,7 +18,7 @@ namespace WebShop.Helpers
             service.AddScoped<ICommentRepository, CommentRepository>();
             service.AddScoped<IFeedbackRepository, FeedbackRepository>();
             service.AddScoped<IOrderRepository, OrderRepository>();
-            service.AddScoped<ISubcategoryRepository, SubcategoryRepository>(); 
+            service.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             service.AddScoped<IAttributeRepository, AttributeRepository>();
             service.AddScoped<IStatusRepository, StatusRepository>();
 

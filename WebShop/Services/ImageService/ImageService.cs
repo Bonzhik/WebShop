@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace WebShop.Services.ImageService
+﻿namespace WebShop.Services.ImageService
 {
     public class ImageService : IImageService
     {
@@ -29,13 +27,16 @@ namespace WebShop.Services.ImageService
                 }
                 else
                 {
+                    //log
                     return $"Failed to upload image. Status code: {response.StatusCode}";
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
+                //log
                 return $"Failed -> {ex.Message}";
             }
-            
+
         }
     }
 }

@@ -10,6 +10,7 @@ namespace WebShop.Repositories.Interfaces
         Task<bool> AddAsync(Cart cart);
         Task<bool> UpdateAsync(Cart cart);
         Task<bool> DeleteAsync(Cart cart);
+        Task<bool> DeleteItemAsync(CartProduct cartProduct);
         Task<bool> SaveAsync();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Numerics;
 
 namespace WebShop.Models
 {
@@ -16,7 +15,7 @@ namespace WebShop.Models
         [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public decimal TotalPrice {  get; set; }
+        public decimal TotalPrice { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 }

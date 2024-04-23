@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebShop.Models
 {
-    public class User: IdentityUser
+    public class User : IdentityUser
     {
         [Required]
         public string Name { get; set; }
@@ -14,11 +14,11 @@ namespace WebShop.Models
         [MaxLength(11)]
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
-        public string? Avatar {  get; set; }
+        public string? Avatar { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public virtual Cart Cart { get; set; }
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();    
+        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

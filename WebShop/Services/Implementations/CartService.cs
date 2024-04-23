@@ -27,13 +27,17 @@ namespace WebShop.Services.Implementations
 
         public async Task<bool> ClearAsync(string userId)
         {
-            User user = await _userManager.FindByIdAsync( userId );
+            User user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"Пользователь {userId} не найден");
+
             Cart cart = await _cartRepository.GetByUserAsync(user);
 
             cart.CartProducts.Clear();
             await _cartRepository.SaveAsync();
 
-            if ( cart != null )
+            if (cart != null)
             {
                 return false;
             }
@@ -43,6 +47,10 @@ namespace WebShop.Services.Implementations
         public async Task<CartR> GetAsync(string userId)
         {
             User user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"Пользователь {userId} не найден");
+
             Cart cart = await _cartRepository.GetByUserAsync(user);
 
             CartR cartDto = MapToDto(cart);
@@ -56,18 +64,22 @@ namespace WebShop.Services.Implementations
             Cart cart = await MapFromDto(cartDto);
             foreach (var orderItem in cart.CartProducts)
             {
+                if (orderItem.Quantity <= 0)
+                {
+                    await _cartRepository.DeleteItemAsync(orderItem);
+                }
                 if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
                 {
                     throw new NotEnoughProductException($"Недостаточно товаров {orderItem.Product.Title}");
                 }
             }
-            return await _cartRepository.UpdateAsync( cart );
+            return await _cartRepository.UpdateAsync(cart);
         }
         private async Task<Cart> MapFromDto(CartW cartDto)
         {
             Cart cart = new Cart
             {
-                UserId = cartDto.UserId,    
+                UserId = cartDto.UserId,
                 User = await _userManager.FindByIdAsync(cartDto.UserId),
             };
             foreach (var cartItem in cartDto.CartProducts)
@@ -78,7 +90,7 @@ namespace WebShop.Services.Implementations
                         {
                             Cart = cart,
                             Product = await _productRepository.GetAsync(cartItem.Key),
-                            Quantity =cartItem.Value
+                            Quantity = cartItem.Value
                         }
                     );
             }

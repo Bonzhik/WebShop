@@ -5,6 +5,7 @@ namespace WebShop.Repositories.Interfaces
     public interface IProductRepository
     {
         Task<Product> GetAsync(int id);
+        Task<Product> GetNoTrackAsync(int id);
         Task<List<Product>> GetAllAsync();
         Task<List<Product>> GetBySubcategoryAsync(Subcategory subcategory);
         Task<List<Product>> GetByCategoryAsync(Category category);

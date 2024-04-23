@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WebShop.Models;
-
-namespace WebShop.Dtos.Write
+﻿namespace WebShop.Dtos.Write
 {
     public class ProductW
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public IFormFile? Image { get; set; }

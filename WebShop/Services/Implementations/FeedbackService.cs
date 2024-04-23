@@ -23,7 +23,7 @@ namespace WebShop.Services.Implementations
             ICommentRepository commentRepository,
             IProductRepository productRepository,
             IMapper mapper
-            ) 
+            )
         {
             _userManager = userManager;
             _feedbackRepository = feedbackRepository;
@@ -54,7 +54,7 @@ namespace WebShop.Services.Implementations
 
         public async Task<bool> DeleteAsync(int feedbackId)
         {
-            Feedback feedback = await _feedbackRepository.GetAsync( feedbackId );
+            Feedback feedback = await _feedbackRepository.GetAsync(feedbackId);
 
             if (feedback == null)
             {
@@ -85,6 +85,10 @@ namespace WebShop.Services.Implementations
         public async Task<List<FeedbackR>> GetByProductAsync(int productId)
         {
             Product product = await _productRepository.GetAsync(productId);
+
+            if (product == null)
+                throw new NotFoundException($"Продукт {productId} не найден");
+
             List<Feedback> feedbacks = await _feedbackRepository.GetByProductAsync(product);
 
             List<FeedbackR> feedbackDtos = new List<FeedbackR>();
@@ -98,6 +102,10 @@ namespace WebShop.Services.Implementations
         public async Task<List<FeedbackR>> GetByUserAsync(string userId)
         {
             User user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"Пользователь {userId} не найден");
+
             List<Feedback> feedbacks = await _feedbackRepository.GetByUserAsync(user);
 
             List<FeedbackR> feedbackDtos = new List<FeedbackR>();
@@ -136,15 +144,15 @@ namespace WebShop.Services.Implementations
         private FeedbackR MapToDto(Feedback feedback)
         {
             FeedbackR feedbackR = _mapper.Map<FeedbackR>(feedback);
-            feedbackR.User = _mapper.Map<UserR>(feedbackR.User); 
-            feedbackR.HaveComments = feedback.Comments.Any() ? true : false;    
+            feedbackR.User = _mapper.Map<UserR>(feedbackR.User);
+            feedbackR.HaveComments = feedback.Comments.Any() ? true : false;
 
             return feedbackR;
         }
         private async Task<double> CalcRating(Product product)
         {
             List<Feedback> feedbacks = await _feedbackRepository.GetByProductAsync(product);
-            double rating =Math.Round(feedbacks.Average(x => x.Rating), 1);
+            double rating = Math.Round(feedbacks.Average(x => x.Rating), 1);
 
             product.Rating = rating;
             await _productRepository.UpdateAsync(product);

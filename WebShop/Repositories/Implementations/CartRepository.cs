@@ -25,6 +25,12 @@ namespace WebShop.Repositories.Implementations
             return await SaveAsync();
         }
 
+        public async Task<bool> DeleteItemAsync(CartProduct cartProduct)
+        {
+            _db.CartProducts.Remove(cartProduct);
+            return await SaveAsync();
+        }
+
         public async Task<List<Cart>> GetAllAsync()
         {
             return await _db.Carts.ToListAsync();

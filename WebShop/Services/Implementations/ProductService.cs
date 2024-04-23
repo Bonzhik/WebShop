@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Diagnostics;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
 using WebShop.Models;
-using WebShop.Repositories.Implementations;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
@@ -42,17 +39,25 @@ namespace WebShop.Services.Implementations
         public async Task<bool> AddAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+
             if (await _productRepository.IsExists(product))
-            {
                 throw new AlreadyExistsException($"Продукт {productDto.Title} уже существует");
-            }
-            product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
+
+            if (productDto.Image != null)
+                product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
+
             return await _productRepository.AddAsync(product);
         }
 
         public async Task<bool> DeleteAsync(int productId)
         {
             Product product = await _productRepository.GetAsync(productId);
+
+            if (product == null)
+            {
+                throw new NotFoundException($"Отзыв {productId} не найден");
+            }
+
             return await _productRepository.DeleteAsync(product);
         }
 
@@ -78,6 +83,10 @@ namespace WebShop.Services.Implementations
         public async Task<List<ProductR>> GetByCategoryAsync(int categoryId)
         {
             Category category = await _categoryRepository.GetAsync(categoryId);
+
+            if (category == null)
+                throw new NotFoundException($"Категория {categoryId} не найдена");
+
             List<Product> products = await _productRepository.GetByCategoryAsync(category);
             List<ProductR> productDtos = new List<ProductR>();
 
@@ -93,6 +102,10 @@ namespace WebShop.Services.Implementations
         {
             Subcategory subcategory = await _subcategoryRepository.GetAsync(subcategoryId);
             List<Product> products = await _productRepository.GetBySubcategoryAsync(subcategory);
+
+            if (subcategory == null)
+                throw new NotFoundException($"Подкатегория {subcategoryId} не найдена");
+
             List<ProductR> productDtos = new List<ProductR>();
 
             foreach (Product product in products)
@@ -106,11 +119,16 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+
             if (await _productRepository.IsExists(product))
-            {
                 throw new AlreadyExistsException($"Продукт {productDto.Title} уже существует");
-            }
-            product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
+
+            if (productDto.Image != null)
+                product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
+
+            var currentProduct = await _productRepository.GetNoTrackAsync(productDto.Id);
+            product.ImageUrl = currentProduct.ImageUrl;
+
             return await _productRepository.UpdateAsync(product);
         }
 
@@ -120,7 +138,7 @@ namespace WebShop.Services.Implementations
 
             product.Subcategory = await _subcategoryRepository.GetAsync(productDto.SubcategoryId);
 
-            foreach(var attribute in productDto.AttributeValues)
+            foreach (var attribute in productDto.AttributeValues)
             {
                 product.AttributeValues.Add(new AttributeValue()
                 {
@@ -138,7 +156,7 @@ namespace WebShop.Services.Implementations
             ProductR productDto = _mapper.Map<ProductR>(product);
 
             List<AttributeValue> attributes = await _attributeRepository.GetValuesByProductAsync(product);
-            foreach(var attribute in attributes)
+            foreach (var attribute in attributes)
             {
                 productDto.Attributes.Add(new AttributeItem
                 {

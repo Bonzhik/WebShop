@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
-using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Controllers
@@ -15,7 +14,7 @@ namespace WebShop.Controllers
             _categoryService = categoryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll()
         {
             List<CategoryR> categoryDto = await _categoryService.GetAllAsync();
             return Ok(categoryDto);

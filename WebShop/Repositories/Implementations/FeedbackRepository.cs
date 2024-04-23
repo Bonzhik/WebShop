@@ -17,7 +17,7 @@ namespace WebShop.Repositories.Implementations
         {
             await _db.Feedbacks.AddAsync(feedback);
             return await SaveAsync();
-            
+
         }
 
         public async Task<bool> DeleteAsync(Feedback feedback)

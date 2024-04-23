@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
 using WebShop.Data;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
@@ -13,7 +12,7 @@ namespace WebShop.Repositories.Implementations
         {
             _db = db;
         }
-        
+
         public async Task<List<Product>> GetAllAsync()
         {
             return await _db.Products.ToListAsync();
@@ -21,6 +20,10 @@ namespace WebShop.Repositories.Implementations
         public async Task<Product> GetAsync(int id)
         {
             return await _db.Products.FindAsync(id);
+        }
+        public async Task<Product> GetNoTrackAsync(int id)
+        {
+            return await _db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task<List<Product>> GetBySubcategoryAsync(Subcategory subcategory)
         {
@@ -51,7 +54,8 @@ namespace WebShop.Repositories.Implementations
             {
                 await _db.SaveChangesAsync();
                 return true;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 //Логирование ошибки
                 return false;

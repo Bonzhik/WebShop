@@ -30,7 +30,7 @@ namespace WebShop.Services.Implementations
             Category category = await _categoryRepository.GetAsync(categoryId);
             List<Models.Attribute> attributes = await _attributeRepository.GetByCategoryAsync(category);
 
-            List<AttributeR> attributeDtos = _mapper.Map<List<AttributeR>>(attributes);  
+            List<AttributeR> attributeDtos = _mapper.Map<List<AttributeR>>(attributes);
 
             return attributeDtos;
         }

@@ -15,7 +15,7 @@ namespace WebShop.Controllers
         }
         [HttpGet]
         [Route("{categoryId}")]
-        public async Task<IActionResult> GetByCategory(int categoryId) 
+        public async Task<IActionResult> GetByCategory(int categoryId)
         {
             List<AttributeR> attributeDtos = await _attributeService.GetByCategoryAsync(categoryId);
             return Ok(attributeDtos);

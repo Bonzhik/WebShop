@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using WebShop.Models;
-
-namespace WebShop.Dtos.Write
+﻿namespace WebShop.Dtos.Write
 {
     public class CommentW
     {

@@ -4,6 +4,6 @@ namespace WebShop.Repositories.Interfaces
 {
     public interface IStatusRepository
     {
-        Task<Status> GetAsync(int id);  
+        Task<Status> GetAsync(int id);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using WebShop.Dtos.Read;
-using WebShop.Models;
 
 namespace WebShop.Services.Interfaces
 {

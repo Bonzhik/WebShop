@@ -7,7 +7,7 @@ namespace WebShop.Services.SortingService
         public List<T> Sort(List<T> data, string sortField, string sortOrder)
         {
             var orderBy = $"{sortField} {sortOrder}";
-            var result = data.AsQueryable().OrderBy(orderBy).ToList();    
+            var result = data.AsQueryable().OrderBy(orderBy).ToList();
             return result;
         }
     }

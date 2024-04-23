@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using WebShop.Dtos.Read;
+﻿using WebShop.Dtos.Read;
 
 namespace WebShop.Services.PaginationService
 {

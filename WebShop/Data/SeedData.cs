@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Reflection;
-using WebShop.Models;
+﻿using WebShop.Models;
 
 namespace WebShop.Data
 {
@@ -33,7 +31,7 @@ namespace WebShop.Data
                 db.Categories.AddRange(categories);
                 db.SaveChanges();
             }
-            if(!db.Subcategories.Any())
+            if (!db.Subcategories.Any())
             {
                 var subcategories = new List<Subcategory>
                 {
@@ -48,7 +46,7 @@ namespace WebShop.Data
             if (!db.Products.Any())
             {
                 var products = new List<Product>();
-                for (int i = 0; i <= 25 ; i++)
+                for (int i = 0; i <= 25; i++)
                 {
                     var product = new Product
                     {
@@ -60,7 +58,7 @@ namespace WebShop.Data
                         Subcategory = db.Subcategories.FirstOrDefault(s => s.Title == "Игровой" && s.Category.Title == "Компьютер"),
                         ImageUrl = "https://pbs.twimg.com/media/D8tUXF5WkAMKa_S.jpg:large"
                     };
-                    product.AttributeValues = db.Attributes.Select(a => new AttributeValue {Attribute = a, Product = product, Value = "x"}).ToList();
+                    product.AttributeValues = db.Attributes.Select(a => new AttributeValue { Attribute = a, Product = product, Value = "x" }).ToList();
 
                     products.Add(product);
                 }
@@ -112,7 +110,7 @@ namespace WebShop.Data
 
                     products.Add(product);
                 }
-                db.Products.AddRange(products); 
+                db.Products.AddRange(products);
                 db.SaveChanges();
             }
         }

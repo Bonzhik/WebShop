@@ -14,7 +14,7 @@ namespace WebShop.Services.Implementations
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IStatusRepository _statusRepository;
-        private readonly UserManager<User> _userManager;    
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         public OrderService
             (
@@ -34,7 +34,7 @@ namespace WebShop.Services.Implementations
 
         public async Task<bool> AddAsync(OrderW orderDto)
         {
-            Order order = await MapFromDto( orderDto );
+            Order order = await MapFromDto(orderDto);
             order.CreatedAt = DateTime.UtcNow;
             order.UpdatedAt = DateTime.UtcNow;
             foreach (var orderItem in order.OrderProducts)
@@ -46,14 +46,19 @@ namespace WebShop.Services.Implementations
             }
             order.TotalPrice = CalculateTotalPrice(order);
 
-            return await _orderRepository.AddAsync( order );
+            return await _orderRepository.AddAsync(order);
         }
 
         public async Task<bool> DeleteAsync(int orderId)
         {
-            Order order = await _orderRepository.GetAsync( orderId );
+            Order order = await _orderRepository.GetAsync(orderId);
 
-            return await _orderRepository.DeleteAsync( order );
+            if (order == null)
+            {
+                throw new NotFoundException($"Отзыв {orderId} не найден");
+            }
+
+            return await _orderRepository.DeleteAsync(order);
         }
 
         public async Task<List<OrderR>> GetAllAsync()
@@ -61,7 +66,8 @@ namespace WebShop.Services.Implementations
             List<Order> orders = await _orderRepository.GetAllAsync();
 
             List<OrderR> orderDtos = new List<OrderR>();
-            foreach(var order in orders) {
+            foreach (var order in orders)
+            {
                 orderDtos.Add(MapToDto(order));
             }
 
@@ -71,13 +77,17 @@ namespace WebShop.Services.Implementations
         public async Task<OrderR> GetAsync(int id)
         {
             Order order = await _orderRepository.GetAsync(id);
-            
-            return MapToDto( order );
+
+            return MapToDto(order);
         }
 
         public async Task<List<OrderR>> GetByUserAsync(string userId)
         {
             User user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"Пользователь {userId} не найден");
+
             List<Order> orders = await _orderRepository.GetByUserAsync(user);
 
             List<OrderR> orderDtos = new List<OrderR>();
@@ -108,10 +118,10 @@ namespace WebShop.Services.Implementations
             {
                 Id = orderDto.Id,
                 Address = orderDto.Address,
-                Status = await _statusRepository.GetAsync( orderDto.StatusId ),
+                Status = await _statusRepository.GetAsync(orderDto.StatusId),
                 User = await _userManager.FindByIdAsync(orderDto.UserId)
             };
-            foreach(var orderItem in orderDto.OrderProducts)
+            foreach (var orderItem in orderDto.OrderProducts)
             {
                 order.OrderProducts.Add
                     (

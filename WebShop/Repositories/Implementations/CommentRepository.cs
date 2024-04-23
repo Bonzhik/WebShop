@@ -36,7 +36,7 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<List<Comment>> GetByFeedBackAsync(Feedback feedback)
         {
-            return await _db.Comments.Where(c => c.Feedback.Equals(feedback)).ToListAsync();    
+            return await _db.Comments.Where(c => c.Feedback.Equals(feedback)).ToListAsync();
         }
 
         public async Task<List<Comment>> GetByUserAsync(User user)

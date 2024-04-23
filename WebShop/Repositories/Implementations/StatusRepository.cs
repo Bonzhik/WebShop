@@ -7,7 +7,7 @@ namespace WebShop.Repositories.Implementations
     public class StatusRepository : IStatusRepository
     {
         private readonly ApplicationContext _db;
-        public StatusRepository(ApplicationContext db) 
+        public StatusRepository(ApplicationContext db)
         {
             _db = db;
         }

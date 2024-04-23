@@ -1,7 +1,5 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Write;
 using WebShop.Services.Interfaces;
@@ -14,7 +12,7 @@ namespace WebShop.Controllers
     {
         private readonly IAccountService _accountService;
 
-        public AccountsController(IAccountService accountService) 
+        public AccountsController(IAccountService accountService)
         {
             _accountService = accountService;
         }
@@ -28,7 +26,8 @@ namespace WebShop.Controllers
 
         [HttpGet("/CheckUserProfile")]
         [Authorize]
-        public IActionResult Index() {
+        public IActionResult Index()
+        {
             return Ok(User.Identity.Name + " " + User.Identity.AuthenticationType);
         }
 
