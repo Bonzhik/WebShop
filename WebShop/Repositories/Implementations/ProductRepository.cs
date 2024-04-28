@@ -72,5 +72,10 @@ namespace WebShop.Repositories.Implementations
             return await _db.Products.
                 AnyAsync(p => p.Title.ToLower() == product.Title.ToLower() && p.Id != product.Id);
         }
+
+        public async Task<List<Product>> Search(string search)
+        {
+            return await _db.Products.Where(p => EF.Functions.Like(p.Title, $"%{search}%")).ToListAsync(); 
+        }
     }
 }

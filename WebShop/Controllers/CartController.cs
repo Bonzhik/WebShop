@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
@@ -9,6 +10,7 @@ namespace WebShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors]
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;

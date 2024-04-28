@@ -80,32 +80,53 @@ namespace WebShop.Services.Implementations
             return productDto;
         }
 
-        public async Task<List<ProductR>> GetByCategoryAsync(int categoryId)
+        public async Task<List<ProductR>> GetByCategoryAsync(int[] categoryId)
         {
-            Category category = await _categoryRepository.GetAsync(categoryId);
 
-            if (category == null)
-                throw new NotFoundException($"Категория {categoryId} не найдена");
-
-            List<Product> products = await _productRepository.GetByCategoryAsync(category);
             List<ProductR> productDtos = new List<ProductR>();
 
-            foreach (Product product in products)
+            foreach (var cat in categoryId)
             {
-                productDtos.Add(await MapToDto(product));
+                Category category = await _categoryRepository.GetAsync(cat);
+
+                if (category == null)
+                    throw new NotFoundException($"Категория {categoryId} не найдена");
+
+                List<Product> products = await _productRepository.GetByCategoryAsync(category);
+
+                foreach (Product product in products)
+                {
+                    productDtos.Add(await MapToDto(product));
+                }
             }
 
             return productDtos;
         }
 
-        public async Task<List<ProductR>> GetBySubcategoryAsync(int subcategoryId)
+        public async Task<List<ProductR>> GetBySubcategoryAsync(int[] subcategoryId)
         {
-            Subcategory subcategory = await _subcategoryRepository.GetAsync(subcategoryId);
-            List<Product> products = await _productRepository.GetBySubcategoryAsync(subcategory);
+            List<ProductR> productDtos = new List<ProductR>();
 
-            if (subcategory == null)
-                throw new NotFoundException($"Подкатегория {subcategoryId} не найдена");
+            foreach (var subcat in subcategoryId)
+            {
+                Subcategory subcategory = await _subcategoryRepository.GetAsync(subcat);
+                List<Product> products = await _productRepository.GetBySubcategoryAsync(subcategory);
 
+                if (subcategory == null)
+                    throw new NotFoundException($"Подкатегория {subcategoryId} не найдена");
+
+                foreach (Product product in products)
+                {
+                    productDtos.Add(await MapToDto(product));
+                }
+            }
+
+            return productDtos;
+        }
+
+        public async Task<List<ProductR>> Search(string search)
+        {
+            var products = await _productRepository.Search(search);
             List<ProductR> productDtos = new List<ProductR>();
 
             foreach (Product product in products)

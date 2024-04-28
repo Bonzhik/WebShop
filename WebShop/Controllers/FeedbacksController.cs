@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
@@ -10,6 +11,7 @@ namespace WebShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors]
     public class FeedbacksController : ControllerBase
     {
         private readonly IFeedbackService _feedbackService;

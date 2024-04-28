@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Write;
 using WebShop.Services.Interfaces;
@@ -8,6 +9,7 @@ namespace WebShop.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [EnableCors]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;

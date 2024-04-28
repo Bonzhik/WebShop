@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
@@ -8,6 +9,7 @@ namespace WebShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;

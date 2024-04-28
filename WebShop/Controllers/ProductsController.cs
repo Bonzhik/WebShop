@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
+using WebShop.Models;
 using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;
@@ -11,10 +13,10 @@ namespace WebShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IImageService _imageService;
         private readonly IPaginationService<ProductR> _paginationService;
         private readonly ISortingService<ProductR> _sortingService;
         public ProductsController
@@ -25,7 +27,6 @@ namespace WebShop.Controllers
             ISortingService<ProductR> sortingService)
         {
             _productService = productService;
-            _imageService = imageService;
             _paginationService = paginationService;
             _sortingService = sortingService;
         }
@@ -52,9 +53,12 @@ namespace WebShop.Controllers
 
             return Ok(result);
         }
-        [HttpGet("byCategory/{categoryId}")]
-        public async Task<IActionResult> GetByCategory(int categoryId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        [HttpGet("byCategory")]
+        public async Task<IActionResult> GetByCategory([FromQuery] int[] categoryId, int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
         {
+            if (categoryId == null || categoryId.Length == 0)
+                return BadRequest();
+
             try
             {
                 List<ProductR> products = await _productService.GetByCategoryAsync(categoryId);
@@ -72,12 +76,38 @@ namespace WebShop.Controllers
                 return StatusCode(502, ex.Message);
             }
         }
-        [HttpGet("bySubategory/{subcategoryId}")]
-        public async Task<IActionResult> GetBySubCategory(int subcategoryId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        [HttpGet("bySubategory")]
+        public async Task<IActionResult> GetBySubCategory([FromQuery] int[] subcategoryId, int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
         {
+            if (subcategoryId == null || subcategoryId.Length == 0)
+                return BadRequest();
+
             try
             {
                 List<ProductR> products = await _productService.GetBySubcategoryAsync(subcategoryId);
+                PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
+
+                if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
+                    result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
+
+                return Ok(result);
+
+            }
+            catch (NotFoundException ex)
+            {
+                //log
+                return StatusCode(502, ex.Message);
+            }
+        }
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string search, int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        {
+            if (string.IsNullOrEmpty(search))
+                return BadRequest("Пустая строка");
+
+            try
+            {
+                List<ProductR> products = await _productService.Search(search);
                 PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
