@@ -29,7 +29,10 @@ namespace WebShop.Controllers
             _sortingService = sortingService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> Get([FromQuery] int page = 1,
+                                             int pageSize = 10,
+                                             string? sortField = null,
+                                             string? sortOrder = null)
         {
             List<CommentR> comments = await _commentService.GetAllAsync();
             PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
@@ -40,7 +43,11 @@ namespace WebShop.Controllers
             return Ok(result);
         }
         [HttpGet("byFeedback/{feedbackId}")]
-        public async Task<IActionResult> GetByFeedback(int feedbackId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetByFeedback(int feedbackId,
+                                                       [FromQuery] int page = 1,
+                                                       int pageSize = 10,
+                                                       string? sortField = null,
+                                                       string? sortOrder = null)
         {
             try
             {
@@ -58,7 +65,11 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("byComment/{commentId}")]
-        public async Task<IActionResult> GetByComment(int commentId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetByComment(int commentId,
+                                                      [FromQuery] int page = 1,
+                                                      int pageSize = 10,
+                                                      string? sortField = null,
+                                                      string? sortOrder = null)
         {
             try
             {
@@ -77,7 +88,11 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("byUser/{userId}")]
-        public async Task<IActionResult> GetByComment(string userId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetByComment(string userId,
+                                                      [FromQuery] int page = 1,
+                                                      int pageSize = 10,
+                                                      string? sortField = null,
+                                                      string? sortOrder = null)
         {
             try
             {

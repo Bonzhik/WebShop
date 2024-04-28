@@ -76,8 +76,8 @@ namespace WebShop.Services.Implementations
 
         public async Task<ProductR> GetAsync(int id)
         {
-            ProductR productDto = _mapper.Map<ProductR>(await _productRepository.GetAsync(id));
-            return productDto;
+            Product productDto = await _productRepository.GetAsync(id);
+            return await MapToDto(productDto);
         }
 
         public async Task<List<ProductR>> GetByCategoryAsync(int[] categoryId)
@@ -119,6 +119,19 @@ namespace WebShop.Services.Implementations
                 {
                     productDtos.Add(await MapToDto(product));
                 }
+            }
+
+            return productDtos;
+        }
+
+        public async Task<List<ProductR>> GetLatest()
+        {
+            List<Product> products = await _productRepository.GetLatest();
+            List<ProductR> productDtos = new List<ProductR>();
+
+            foreach (var product in products)
+            {
+                productDtos.Add((await MapToDto(product)));
             }
 
             return productDtos;

@@ -29,7 +29,10 @@ namespace WebShop.Controllers
             _sortingService = sortingService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> Get([FromQuery] int page = 1,
+                                             int pageSize = 10,
+                                             string? sortField = null,
+                                             string? sortOrder = null)
         {
             List<FeedbackR> feedbacks = await _feedbackService.GetAllAsync();
             PaginationResponse<FeedbackR> result = _paginationService.Paginate(feedbacks, page, pageSize);
@@ -40,7 +43,11 @@ namespace WebShop.Controllers
             return Ok(result);
         }
         [HttpGet("byProduct/{productId}")]
-        public async Task<IActionResult> GetByProduct(int productId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetByProduct(int productId,
+                                                      [FromQuery] int page = 1,
+                                                      int pageSize = 10,
+                                                      string? sortField = null,
+                                                      string? sortOrder = null)
         {
             try
             {
@@ -59,7 +66,11 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("byUser/{userId}")]
-        public async Task<IActionResult> GetByUser(string userId, [FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetByUser(string userId,
+                                                   [FromQuery] int page = 1,
+                                                   int pageSize = 10,
+                                                   string? sortField = null,
+                                                   string? sortOrder = null)
         {
             try
             {

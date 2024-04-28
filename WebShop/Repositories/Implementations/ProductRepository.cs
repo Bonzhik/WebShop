@@ -77,5 +77,10 @@ namespace WebShop.Repositories.Implementations
         {
             return await _db.Products.Where(p => EF.Functions.Like(p.Title, $"%{search}%")).ToListAsync(); 
         }
+
+        public async Task<List<Product>> GetLatest()
+        {
+            return await _db.Products.OrderByDescending(p => p.CreatedAt).Take(10).ToListAsync(); 
+        }
     }
 }

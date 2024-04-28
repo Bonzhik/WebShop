@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Dynamic.Core;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
@@ -43,9 +44,15 @@ namespace WebShop.Controllers
             return Ok(product);
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1,
+                                                int pageSize = 10,
+                                                string? sortField = null,
+                                                string? sortOrder = null,
+                                                int minPrice = 1,
+                                                int maxPrice = 300000)
         {
             List<ProductR> products = await _productService.GetAllAsync();
+            products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
             PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
 
             if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
@@ -53,8 +60,20 @@ namespace WebShop.Controllers
 
             return Ok(result);
         }
+        [HttpGet("latest")]
+        public async Task<IActionResult> GetLatest()
+        {
+            var products = await _productService.GetLatest();
+            return Ok(products);
+        }
         [HttpGet("byCategory")]
-        public async Task<IActionResult> GetByCategory([FromQuery] int[] categoryId, int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetByCategory([FromQuery] int[] categoryId,
+                                                       int page = 1,
+                                                       int pageSize = 10,
+                                                       string? sortField = null,
+                                                       string? sortOrder = null,
+                                                       int minPrice = 1,
+                                                       int maxPrice = 300000)
         {
             if (categoryId == null || categoryId.Length == 0)
                 return BadRequest();
@@ -62,6 +81,7 @@ namespace WebShop.Controllers
             try
             {
                 List<ProductR> products = await _productService.GetByCategoryAsync(categoryId);
+                products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
                 PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
@@ -77,7 +97,13 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("bySubategory")]
-        public async Task<IActionResult> GetBySubCategory([FromQuery] int[] subcategoryId, int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> GetBySubCategory([FromQuery] int[] subcategoryId,
+                                                          int page = 1,
+                                                          int pageSize = 10,
+                                                          string? sortField = null,
+                                                          string? sortOrder = null,
+                                                          int minPrice = 1,
+                                                          int maxPrice = 300000)
         {
             if (subcategoryId == null || subcategoryId.Length == 0)
                 return BadRequest();
@@ -85,6 +111,7 @@ namespace WebShop.Controllers
             try
             {
                 List<ProductR> products = await _productService.GetBySubcategoryAsync(subcategoryId);
+                products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
                 PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
@@ -100,7 +127,11 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] string search, int page = 1, int pageSize = 10, string? sortField = null, string? sortOrder = null)
+        public async Task<IActionResult> Search([FromQuery] string search,
+                                                int page = 1,
+                                                int pageSize = 10,
+                                                string? sortField = null,
+                                                string? sortOrder = null)
         {
             if (string.IsNullOrEmpty(search))
                 return BadRequest("Пустая строка");
