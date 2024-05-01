@@ -138,7 +138,7 @@ namespace WebShop.Services.Implementations
                 Feedback = await _feedbackRepository.GetAsync(commentDto.FeedbackId),
                 ParentComment = commentDto.ParentCommentId == 0 ? null
                         : await _commentRepository.GetAsync(commentDto.ParentCommentId),
-                Product = await _productRepository.GetAsync(commentDto.ProductId)
+                Product = await _productRepository.GetAsync(commentDto.ProductId),
             };
             return comment;
         }
@@ -146,6 +146,7 @@ namespace WebShop.Services.Implementations
         {
             CommentR commentR = _mapper.Map<CommentR>(comment);
             commentR.User = _mapper.Map<UserR>(comment.User);
+            commentR.HaveComments = comment.Comments.Count > 0;
             return commentR;
         }
     }

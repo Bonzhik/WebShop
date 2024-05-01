@@ -51,7 +51,7 @@ namespace WebShop.Controllers
         {
             try
             {
-                List<CommentR> comments = await _commentService.GetAllAsync();
+                List<CommentR> comments = await _commentService.GetByFeedbackAsync(feedbackId);
                 PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
@@ -88,7 +88,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("byUser/{userId}")]
-        public async Task<IActionResult> GetByComment(string userId,
+        public async Task<IActionResult> GetByUser(   string userId,
                                                       [FromQuery] int page = 1,
                                                       int pageSize = 10,
                                                       string? sortField = null,

@@ -1,4 +1,5 @@
-﻿using WebShop.Models;
+﻿using System.Runtime.CompilerServices;
+using WebShop.Models;
 
 namespace WebShop.Data
 {
@@ -111,6 +112,92 @@ namespace WebShop.Data
                     products.Add(product);
                 }
                 db.Products.AddRange(products);
+                db.SaveChanges();
+            }
+            if (!db.Users.Any())
+            {
+                var users = new List<User>
+                {
+                    new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "Test",
+                        SurName = "Test",
+                        MiddleName = "Test",
+                        PhoneNumber ="12345678901",
+                        BirthDate =DateTime.UtcNow,
+                        CreatedAt =DateTime.UtcNow,
+                    },
+                    new User 
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "TestTest",
+                        SurName = "TestTest",
+                        MiddleName = "TestTest",
+                        PhoneNumber ="12345678901",
+                        BirthDate =DateTime.UtcNow,
+                        CreatedAt =DateTime.UtcNow,
+                    }
+                };
+                var carts = new List<Cart>
+                {
+                    new Cart { User = users[0] },
+                    new Cart { User = users[1] },
+                };
+                db.Carts.AddRange(carts);   
+                db.Users.AddRange(users);
+                db.SaveChanges();
+            }
+            if (!db.Feedbacks.Any())
+            {
+                List<Feedback> feedbacks = new List<Feedback>();
+                foreach (var product in db.Products.ToList())
+                {
+                    feedbacks.AddRange(new List<Feedback>
+                    { 
+                        new Feedback{Text = "Good", Rating = 5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
+                        new Feedback{Text = "Very Good", Rating = 4, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
+                        new Feedback{Text = "Amazing", Rating = 5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
+                        new Feedback{Text = "Good", Rating = 5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
+                        new Feedback{Text = "Bad", Rating = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
+                        new Feedback{Text = "Et harum quidem rerum facilis est et expedita distinctio", Rating = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
+                    });
+                }
+                db.Feedbacks.AddRange(feedbacks);
+                db.SaveChanges();
+            }
+            if (!db.Comments.Any())
+            {
+                List<Comment> comments = new List<Comment>();
+                foreach (var feedback in db.Feedbacks.ToList())
+                {
+                    comments.AddRange(new List<Comment>
+                    {
+                        new Comment{Text = "Agree", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = feedback.Product, Feedback = feedback},
+                        new Comment{Text = "Disagree", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = feedback.Product, Feedback = feedback},
+                        new Comment{Text = "Lol", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = feedback.Product, Feedback = feedback},
+                        new Comment{Text = "Et harum quidem rerum facilis est et expedita distinctio", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = feedback.Product, Feedback = feedback}
+                    });
+                }
+                db.Comments.AddRange(comments);
+                db.SaveChanges();
+                bool swap = true;
+                List<Comment> ccomments = new List<Comment>();
+                foreach (var comment in db.Comments.ToList())
+                {
+                    if (swap)
+                    {
+                        ccomments.AddRange(new List<Comment>
+                    {
+                        new Comment{Text = "Agree", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = comment.Product, Feedback = comment.Feedback, ParentComment = comment},
+                        new Comment{Text = "Disagree", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = comment.Product, Feedback = comment.Feedback, ParentComment = comment},
+                        new Comment{Text = "Lol", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = comment.Product, Feedback = comment.Feedback, ParentComment = comment},
+                        new Comment{Text = "Et harum quidem rerum facilis est et expedita distinctio", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = comment.Product, Feedback = comment.Feedback, ParentComment = comment}
+                    });
+                    }
+                    swap = !swap;
+                }
+                db.Comments.AddRange(ccomments);
                 db.SaveChanges();
             }
         }
