@@ -1,10 +1,47 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Runtime.CompilerServices;
 using WebShop.Models;
 
 namespace WebShop.Data
 {
     public static class SeedData
     {
+
+        public static async Task InitUserRoles(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            string adminName = "Admin";
+            string adminEmail = "Admin@mail.ru";
+            string adminPhoneNumber = "89917848932";
+            string password = "Admin_123";
+            if (await roleManager.FindByNameAsync("Admin") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+            if (await roleManager.FindByNameAsync("Buyer") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("Buyer"));
+            }
+            if (await userManager.FindByNameAsync(adminName) == null)
+            {
+                User admin = new User
+                {
+                    Email = adminEmail,
+                    UserName = adminName,
+                    Name = adminName,
+                    SurName = adminName,
+                    MiddleName = adminName,
+                    PhoneNumber = adminPhoneNumber,
+                    Avatar = "."
+                };
+
+                IdentityResult result = await userManager.CreateAsync(admin, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
+            }
+        }
+
         public static void Init(ApplicationContext db)
         {
             if (!db.Attributes.Any())
