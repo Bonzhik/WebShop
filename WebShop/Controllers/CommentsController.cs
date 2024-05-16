@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
@@ -88,6 +89,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("byUser/{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetByUser(   string userId,
                                                       [FromQuery] int page = 1,
                                                       int pageSize = 10,
@@ -111,6 +113,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Add(CommentW comment)
         {
             if (!await _commentService.AddAsync(comment))
@@ -119,6 +122,7 @@ namespace WebShop.Controllers
             return Ok();
         }
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> Update(CommentW comment)
         {
             if (!await _commentService.UpdateAsync(comment))
@@ -127,6 +131,7 @@ namespace WebShop.Controllers
             return Ok();
         }
         [HttpDelete("{commentId}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int commentId)
         {
             try

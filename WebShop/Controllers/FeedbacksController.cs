@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
@@ -66,6 +67,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpGet("byUser/{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetByUser(string userId,
                                                    [FromQuery] int page = 1,
                                                    int pageSize = 10,
@@ -89,6 +91,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Add(FeedbackW feedbackDto)
         {
             try
@@ -105,6 +108,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> Update(FeedbackW feedbackDto)
         {
             if (!await _feedbackService.UpdateAsync(feedbackDto))
@@ -113,6 +117,7 @@ namespace WebShop.Controllers
             return Ok();
         }
         [HttpDelete("{feedbackId}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int feedbackId)
         {
             try

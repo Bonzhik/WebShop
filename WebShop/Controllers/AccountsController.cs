@@ -19,7 +19,6 @@ namespace WebShop.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly ICartRepository _cartRepository;
         private readonly string[] whiteList = [".jpg", ".png", ".gif", ".bmp"];
 
         public AccountsController(IAccountService accountService)

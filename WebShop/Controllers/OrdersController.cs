@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
@@ -18,6 +19,7 @@ namespace WebShop.Controllers
             _orderService = orderService;
         }
         [HttpGet("{orderId}")]
+        [Authorize]
         public async Task<IActionResult> Get(int orderId)
         {
             var order = await _orderService.GetAsync(orderId);  
@@ -28,12 +30,14 @@ namespace WebShop.Controllers
             return Ok(order);
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             List<OrderR> orders = await _orderService.GetAllAsync();
             return Ok(orders);
         }
         [HttpGet("byUser/{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetByUser(string userId)
         {
             try
@@ -48,6 +52,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Add(OrderW orderDto)
         {
             try
@@ -65,6 +70,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpDelete("{orderId}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int orderId)
         {
             try

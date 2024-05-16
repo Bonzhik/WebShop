@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
 using WebShop.Dtos.Read;
@@ -155,6 +156,7 @@ namespace WebShop.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(ProductW productDto)
         {
             try
@@ -171,6 +173,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(ProductW productDto)
         {
             try
@@ -187,6 +190,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int productId)
         {
             try

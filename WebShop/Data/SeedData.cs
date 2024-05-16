@@ -237,6 +237,16 @@ namespace WebShop.Data
                 db.Comments.AddRange(ccomments);
                 db.SaveChanges();
             }
+            if (!db.Statuses.Any())
+            {
+                var statuses = new List<Status>
+                {
+                    new Status {Title = "Оплачен"},
+                    new Status {Title = "Выполнен"}
+                };
+                db.Statuses.AddRange(statuses);
+                db.SaveChanges();
+            }
         }
     }
 }

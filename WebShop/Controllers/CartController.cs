@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
@@ -19,6 +20,7 @@ namespace WebShop.Controllers
             _cartService = cartService;
         }
         [HttpGet("{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetByUser(string userId)
         {
             try
@@ -32,6 +34,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Add(CartW cartW)
         {
             try
@@ -47,6 +50,7 @@ namespace WebShop.Controllers
             }
         }
         [HttpPost("clear/{userId}")]
+        [Authorize]
         public async Task<IActionResult> Clear(string userId)
         {
             try

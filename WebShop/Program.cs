@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("http://localhost:3000")
             .AllowAnyMethod()
             .AllowAnyHeader();
+
     });
 });
 
@@ -38,17 +39,18 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
     var services = scope.ServiceProvider;
+    dbContext.Database.Migrate();
     try
     {
         var userManager = services.GetRequiredService<UserManager<User>>();
         var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await SeedData.InitUserRoles(userManager, rolesManager);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
-    //dbContext.Database.Migrate();
     SeedData.Init(dbContext);
 }
 
