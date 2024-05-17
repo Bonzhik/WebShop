@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Runtime.CompilerServices;
 using WebShop.Models;
 
 namespace WebShop.Data
@@ -165,7 +164,7 @@ namespace WebShop.Data
                         BirthDate =DateTime.UtcNow,
                         CreatedAt =DateTime.UtcNow,
                     },
-                    new User 
+                    new User
                     {
                         Id = Guid.NewGuid().ToString(),
                         Name = "TestTest",
@@ -181,7 +180,7 @@ namespace WebShop.Data
                     new Cart { User = users[0] },
                     new Cart { User = users[1] },
                 };
-                db.Carts.AddRange(carts);   
+                db.Carts.AddRange(carts);
                 db.Users.AddRange(users);
                 db.SaveChanges();
             }
@@ -191,7 +190,7 @@ namespace WebShop.Data
                 foreach (var product in db.Products.ToList())
                 {
                     feedbacks.AddRange(new List<Feedback>
-                    { 
+                    {
                         new Feedback{Text = "Good", Rating = 5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
                         new Feedback{Text = "Very Good", Rating = 4, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},
                         new Feedback{Text = "Amazing", Rating = 5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow, User = db.Users.FirstOrDefault(), Product = product},

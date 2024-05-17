@@ -56,7 +56,7 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<bool> UpdateAsync(Order order)
         {
-            _db.Orders.Remove(order);
+            _db.Orders.Update(order);
             return await SaveAsync();
         }
     }

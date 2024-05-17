@@ -22,7 +22,7 @@ namespace WebShop.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int orderId)
         {
-            var order = await _orderService.GetAsync(orderId);  
+            var order = await _orderService.GetAsync(orderId);
             if (order == null)
             {
                 return NotFound();
@@ -85,6 +85,21 @@ namespace WebShop.Controllers
             {
                 //log
                 return StatusCode(502, ex.Message);
+            }
+        }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update([FromQuery] int orderId, int statusId)
+        {
+            try
+            {
+                if (!await _orderService.UpdateAsync(orderId, statusId))
+                    return StatusCode(500, "Internal Server Error");
+                //log
+                return Ok("Success");
+            } catch (NotEnoughProductException ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

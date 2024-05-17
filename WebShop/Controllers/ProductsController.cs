@@ -5,7 +5,6 @@ using System.Linq.Dynamic.Core;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
-using WebShop.Models;
 using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;

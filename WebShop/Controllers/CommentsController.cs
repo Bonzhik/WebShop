@@ -59,10 +59,11 @@ namespace WebShop.Controllers
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
 
                 return Ok(result);
-            } catch (NotFoundException ex) 
+            }
+            catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message); 
+                return StatusCode(502, ex.Message);
             }
         }
         [HttpGet("byComment/{commentId}")]
@@ -90,7 +91,7 @@ namespace WebShop.Controllers
         }
         [HttpGet("byUser/{userId}")]
         [Authorize]
-        public async Task<IActionResult> GetByUser(   string userId,
+        public async Task<IActionResult> GetByUser(string userId,
                                                       [FromQuery] int page = 1,
                                                       int pageSize = 10,
                                                       string? sortField = null,
@@ -140,7 +141,8 @@ namespace WebShop.Controllers
                     return StatusCode(500, "Internal Server Error");
                 //log
                 return Ok();
-            } catch (NotFoundException ex)
+            }
+            catch (NotFoundException ex)
             {
                 //log
                 return StatusCode(502, ex.Message);

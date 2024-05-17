@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
-using WebShop.Models;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Controllers
@@ -27,7 +26,8 @@ namespace WebShop.Controllers
             {
                 CartR cart = await _cartService.GetAsync(userId);
                 return Ok(cart);
-            } catch (NotFoundException ex)
+            }
+            catch (NotFoundException ex)
             {
                 //log
                 return StatusCode(502, ex.Message);
@@ -43,7 +43,8 @@ namespace WebShop.Controllers
                     return StatusCode(500, "Internal Server Error");
                 //log
                 return Ok("Success");
-            } catch (NotEnoughProductException ex)
+            }
+            catch (NotEnoughProductException ex)
             {
                 //log
                 return StatusCode(503, ex.Message);

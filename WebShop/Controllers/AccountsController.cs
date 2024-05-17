@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Helpers;
-using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
 
 namespace WebShop.Controllers

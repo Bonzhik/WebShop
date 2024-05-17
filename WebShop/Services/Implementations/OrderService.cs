@@ -99,17 +99,18 @@ namespace WebShop.Services.Implementations
             return orderDtos;
         }
 
-        public async Task<bool> UpdateAsync(OrderW orderDto)
+        public async Task<bool> UpdateAsync(int orderId, int statusId)
         {
-            Order order = await MapFromDto(orderDto);
-            order.UpdatedAt = DateTime.UtcNow;
-            foreach (var orderItem in order.OrderProducts)
-            {
-                if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
-                {
-                    throw new NotEnoughProductException($"Недостаточно товаров {orderItem.Product.Title}");
-                }
-            }
+            var order = await _orderRepository.GetAsync(orderId);
+            if (order == null)
+                throw new NotFoundException("Заказ не найден");
+            var status = await _statusRepository.GetAsync(statusId);
+
+            if (status == null)
+                throw new NotFoundException($"Статус не найден");
+
+            order.Status = status;
+
             return await _orderRepository.UpdateAsync(order);
         }
         private async Task<Order> MapFromDto(OrderW orderDto)
@@ -123,12 +124,16 @@ namespace WebShop.Services.Implementations
             };
             foreach (var orderItem in orderDto.OrderProducts)
             {
+                var product = await _productRepository.GetAsync(orderItem.Key);
+                if ( product == null )    
+                    throw new NotFoundException("Продукт не найден");
+
                 order.OrderProducts.Add
                     (
                         new OrderProduct
                         {
                             Order = order,
-                            Product = await _productRepository.GetAsync(orderItem.Key),
+                            Product = product,
                             Quantity = orderItem.Value
                         }
                     );
