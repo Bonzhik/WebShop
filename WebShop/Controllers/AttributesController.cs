@@ -12,9 +12,11 @@ namespace WebShop.Controllers
     public class AttributesController : ControllerBase
     {
         private readonly IAttributeService _attributeService;
-        public AttributesController(IAttributeService attributeService)
+        private readonly ILogger _logger;
+        public AttributesController(IAttributeService attributeService, ILogger<AttributesController> logger)
         {
             _attributeService = attributeService;
+            _logger = logger;
         }
         [HttpGet]
         [Route("{categoryId}")]

@@ -30,7 +30,8 @@ namespace WebShop.Data
                     SurName = adminName,
                     MiddleName = adminName,
                     PhoneNumber = adminPhoneNumber,
-                    Avatar = "."
+                    Avatar = ".",
+                    BirthDate = DateTime.UtcNow
                 };
 
                 IdentityResult result = await userManager.CreateAsync(admin, password);
@@ -43,6 +44,7 @@ namespace WebShop.Data
 
         public static void Init(ApplicationContext db)
         {
+
             if (!db.Attributes.Any())
             {
                 var attributes = new List<Models.Attribute>
@@ -247,5 +249,7 @@ namespace WebShop.Data
                 db.SaveChanges();
             }
         }
+
+        
     }
 }

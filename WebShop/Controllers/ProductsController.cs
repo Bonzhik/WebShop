@@ -20,16 +20,19 @@ namespace WebShop.Controllers
         private readonly IProductService _productService;
         private readonly IPaginationService<ProductR> _paginationService;
         private readonly ISortingService<ProductR> _sortingService;
+        private readonly ILogger _logger;
         public ProductsController
             (
             IProductService productService,
             IImageService imageService,
             IPaginationService<ProductR> paginationService,
-            ISortingService<ProductR> sortingService)
+            ISortingService<ProductR> sortingService,
+            ILogger<ProductsController> logger)
         {
             _productService = productService;
             _paginationService = paginationService;
             _sortingService = sortingService;
+            _logger = logger;
         }
         [HttpGet("{productId}")]
         public async Task<IActionResult> Get(int productId)
@@ -154,54 +157,63 @@ namespace WebShop.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(ProductW productDto)
         {
+            _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
+            _logger.LogInformation("The user has made a request to create a product!");
             try
             {
                 if (!await _productService.AddAsync(productDto))
                     return StatusCode(500, "Internal Server Error");
-                //log
+                _logger.LogInformation("The user has successfully added the product!");
                 return Ok("Success");
             }
             catch (AlreadyExistsException ex)
             {
-                //log
+                _logger.LogInformation($"The user was unable to add the product! Error: {ex.Message}");
                 return StatusCode(501, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(ProductW productDto)
         {
+            _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
+            _logger.LogInformation("The user made a request to edit the product!");
             try
             {
                 if (!await _productService.UpdateAsync(productDto))
                     return StatusCode(500, "Internal Server Error");
-                //log
+                _logger.LogInformation("The user has successfully updated the product!");
                 return Ok("Success");
             }
             catch (AlreadyExistsException ex)
             {
-                //log
+                _logger.LogInformation($"The user was unable to update the product! Error: {ex.Message}");
                 return StatusCode(501, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{productId}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int productId)
         {
+            _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
+            _logger.LogInformation("The user has made a request to delete the product!");
             try
             {
                 if (!await _productService.DeleteAsync(productId))
                     return StatusCode(500, "Internal Server Error");
-                //log
+                _logger.LogInformation("\r\nThe user has successfully deleted the product!");
                 return Ok("Success");
             }
             catch (NotFoundException ex)
             {
-                //log
+                _logger.LogInformation($"The user was unable to delete the product! {ex.Message}");
                 return StatusCode(502, ex.Message);
             }
         }

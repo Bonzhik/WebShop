@@ -18,5 +18,7 @@ namespace WebShop.Services.Interfaces
 
         Task<IdentityResult> ChangeUserInfo(DateTime birthDate, string surName, string name, string middleName, string userName);
         Task<IdentityResult> AddUserToRole(string userName, string roleName);
+
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using WebShop.Repositories.Implementations;
+﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebShop.Repositories.Implementations;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.ImageService;
 using WebShop.Services.Implementations;
@@ -21,6 +23,7 @@ namespace WebShop.Helpers
             service.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             service.AddScoped<IAttributeRepository, AttributeRepository>();
             service.AddScoped<IStatusRepository, StatusRepository>();
+            service.AddScoped<ILogRepository, LogRepository>();
 
             service.AddScoped<IProductService, ProductService>();
             service.AddScoped<ICategoryService, CategoryService>();
@@ -32,6 +35,7 @@ namespace WebShop.Helpers
             service.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
             service.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
             service.AddScoped<ICartService, CartService>();
+            service.AddScoped<ILogService, LogService>();
             service.AddHttpClient<ImageService>();
 
             service.AddScoped<IAccountService, AccountService>();

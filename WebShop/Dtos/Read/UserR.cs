@@ -10,6 +10,6 @@
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
-        public string? AvatarName { get; set; }
+        public string? Avatar { get; set; }
     }
 }

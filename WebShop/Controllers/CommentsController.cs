@@ -22,7 +22,8 @@ namespace WebShop.Controllers
             (
             ICommentService commentService,
             IPaginationService<CommentR> paginationService,
-            ISortingService<CommentR> sortingService
+            ISortingService<CommentR> sortingService,
+            ILogger<CommentsController> logger
             )
         {
             _paginationsService = paginationService;

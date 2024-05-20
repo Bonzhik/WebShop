@@ -9,7 +9,9 @@ namespace WebShop.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
+            Database.EnsureCreated();
         }
+
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartProduct> CartProducts { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -22,6 +24,7 @@ namespace WebShop.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Models.Attribute> Attributes { get; set; }
         public DbSet<AttributeValue> AttributeValues { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

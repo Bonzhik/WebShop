@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Models;
@@ -12,6 +13,7 @@ namespace WebShop.Services.Implementations
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
         private readonly ICartRepository _cartRepository;
 
         private readonly string avatarsDirectory = "UsersAvatars";
@@ -20,26 +22,28 @@ namespace WebShop.Services.Implementations
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager,
+            IMapper mapper,
             ICartRepository cartRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _cartRepository = cartRepository;
+            _mapper = mapper;
             _roleManager = roleManager;
         }
 
         public async Task<IdentityResult> Register(UserW userW)
         {
-            User user = MapFromDto(userW);
+            User user = _mapper.Map<User>(userW);
 
             if (!Directory.Exists(avatarsDirectory))
             {
                 Directory.CreateDirectory(avatarsDirectory);
             }
 
-            if (userW.avatar != null)
+            if (userW.Avatar != null)
             {
-                string fileName = userW.UserName + "-" + userW.avatar.FileName;
+                string fileName = userW.UserName + "-" + userW.Avatar.FileName;
 
                 user.Avatar = fileName;
             }
@@ -50,6 +54,7 @@ namespace WebShop.Services.Implementations
             {
                 await _cartRepository.AddAsync(new Cart() { User = user });
                 await _signInManager.SignInAsync(user, false);
+                await _userManager.AddToRoleAsync(user, "buyer");
 
                 if (user.Avatar != null)
                 {
@@ -59,7 +64,7 @@ namespace WebShop.Services.Implementations
 
                     await using (var fileStream = new FileStream(path, FileMode.Create))
                     {
-                        await userW.avatar.CopyToAsync(fileStream);
+                        await userW.Avatar.CopyToAsync(fileStream);
                     }
                 }
             }
@@ -85,8 +90,8 @@ namespace WebShop.Services.Implementations
             bool checkPassword = await _userManager.CheckPasswordAsync(user, password);
             if (checkPassword)
             {
-                string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
-                return await _userManager.ChangeEmailAsync(user, newEmail, token);
+                user.Email = newEmail;
+                return await _userManager.UpdateAsync(user);
             }
             else
             {
@@ -103,8 +108,9 @@ namespace WebShop.Services.Implementations
             bool result = await _userManager.CheckPasswordAsync(user, password);
             if (result)
             {
-                string token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, newNumber);
-                return await _userManager.ChangePhoneNumberAsync(user, newNumber, token);
+                user.PhoneNumber = newNumber;
+                
+                return await _userManager.UpdateAsync(user);
             }
             else
             {
@@ -135,9 +141,9 @@ namespace WebShop.Services.Implementations
             {
                 File.Delete(path);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
 
             await using (var fileStream = new FileStream(path, FileMode.Create))
@@ -172,7 +178,7 @@ namespace WebShop.Services.Implementations
         public async Task<UserR> GetUserData(string userName)
         {
             User user = await _userManager.FindByNameAsync(userName);
-            return MapToDto(user);
+            return _mapper.Map<UserR>(user);
         }
 
         public string GetUserAvatarPath(string avatarName)
@@ -218,41 +224,6 @@ namespace WebShop.Services.Implementations
             }
 
             return result;
-        }
-
-        public User MapFromDto(UserW userW)
-        {
-            User user = new User
-            {
-                UserName = userW.UserName,
-                Name = userW.Name,
-                MiddleName = userW.MiddleName,
-                SurName = userW.SurName,
-                BirthDate = userW.BirthDate,
-                PhoneNumber = userW.PhoneNumber,
-                Email = userW.Email,
-            };
-
-            return user;
-        }
-
-        public UserR MapToDto(User user)
-        {
-            UserR userR = new UserR
-            {
-                UserName = user.UserName,
-                Name = user.Name,
-                MiddleName = user.MiddleName,
-                SurName = user.SurName,
-                BirthDate = user.BirthDate,
-                PhoneNumber = user.PhoneNumber,
-                Email = user.Email,
-                AvatarName = user.Avatar,
-                Id = user.Id
-            };
-
-
-            return userR;
         }
 
     }

@@ -10,13 +10,16 @@ namespace WebShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Buyer")]
     [EnableCors]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        private readonly ILogger _logger;
+        public OrdersController(IOrderService orderService, ILogger logger)
         {
             _orderService = orderService;
+            _logger = logger;
         }
         [HttpGet("{orderId}")]
         [Authorize]
@@ -36,54 +39,66 @@ namespace WebShop.Controllers
             List<OrderR> orders = await _orderService.GetAllAsync();
             return Ok(orders);
         }
+
+
         [HttpGet("byUser/{userId}")]
         [Authorize]
         public async Task<IActionResult> GetByUser(string userId)
         {
+            _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
+            _logger.LogInformation("The user made a request to view the orders!");
             try
             {
                 var orders = await _orderService.GetByUserAsync(userId);
+                _logger.LogInformation("The user has successfully received the list of orders!");
                 return Ok(orders);
             }
             catch (NotFoundException ex)
             {
-                //log
+                _logger.LogInformation($"The user could not receive the list of orders! Error: {ex.Message}");
                 return StatusCode(502, ex.Message);
             }
         }
+
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Add(OrderW orderDto)
         {
+            _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
+            _logger.LogInformation("The user has made a request to create an order!");
             try
             {
                 if (!await _orderService.AddAsync(orderDto))
                     return StatusCode(500, "Internal Server Error");
 
-                //log
+                _logger.LogInformation("The user has successfully created an order!");
                 return Ok("Success");
             }
             catch (NotEnoughProductException ex)
             {
-                //log
+                _logger.LogInformation($"The user was unable to create an order! Error: {ex.Message}");
                 return StatusCode(503, ex.Message);
             }
         }
+
         [HttpDelete("{orderId}")]
         [Authorize]
         public async Task<IActionResult> Delete(int orderId)
         {
+            _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
+            _logger.LogInformation("The user has made a request to delete the order!");
             try
             {
                 if (!await _orderService.DeleteAsync(orderId))
                     return StatusCode(500, "Internal Server Error");
 
-                //log
+                _logger.LogInformation("The user has successfully deleted the order!");
                 return Ok("Success");
             }
             catch (NotFoundException ex)
             {
-                //log
+                _logger.LogInformation($"The user was unable to delete the order! Error: {ex.Message}");
                 return StatusCode(502, ex.Message);
             }
         }

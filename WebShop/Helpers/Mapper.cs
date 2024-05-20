@@ -18,12 +18,18 @@ namespace WebShop.Helpers
             CreateMap<ProductW, Product>()
                 .ForMember(dest => dest.AttributeValues, opt => opt.Ignore());
 
+            CreateMap<LogW, Log>();
+
             CreateMap<User, UserR>();
+            CreateMap<UserW, User>()
+                .ForMember(dest => dest.Avatar, opt => opt.Ignore());
             CreateMap<Feedback, FeedbackR>();
             CreateMap<Comment, CommentR>();
             CreateMap<Subcategory, SubcategoryR>();
             CreateMap<Category, CategoryR>();
             CreateMap<Models.Attribute, AttributeR>();
+            CreateMap<Log, LogR>();
+
         }
     }
 }
