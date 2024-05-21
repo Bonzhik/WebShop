@@ -23,6 +23,11 @@ builder.Services.AddIdentity<User, IdentityRole>().
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = false;
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -45,7 +50,6 @@ ILogService logService = serviceProvider.GetService<ILogService>();
 IHttpContextAccessor contextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
 
 builder.Logging.AddDbLogging(logService, contextAccessor);
-//builder.Logging.AddFilter<DbLoggerProvider>("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 builder.Logging.AddFilter<DbLoggerProvider>("Microsoft", LogLevel.None);
 
 
