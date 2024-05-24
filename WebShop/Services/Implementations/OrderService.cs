@@ -37,6 +37,10 @@ namespace WebShop.Services.Implementations
             Order order = await MapFromDto(orderDto);
             order.CreatedAt = DateTime.UtcNow;
             order.UpdatedAt = DateTime.UtcNow;
+
+            if (order.Status == null || order.User == null)
+                throw new NotFoundException("Один из параметров не найден");
+
             foreach (var orderItem in order.OrderProducts)
             {
                 if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
@@ -102,6 +106,7 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(int orderId, int statusId)
         {
             var order = await _orderRepository.GetAsync(orderId);
+
             if (order == null)
                 throw new NotFoundException("Заказ не найден");
             var status = await _statusRepository.GetAsync(statusId);

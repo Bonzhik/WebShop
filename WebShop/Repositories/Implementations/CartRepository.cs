@@ -62,8 +62,15 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<bool> UpdateAsync(Cart cart)
         {
-            _db.Carts.Update(cart);
+            var cartD = await GetByUserAsync(cart.User);
+            if (cartD != null)
+            {
+                _db.Remove(cartD);
+                await SaveAsync();
+            }
+            await _db.Carts.AddAsync(cart);
             return await SaveAsync();
         }
+
     }
 }

@@ -38,6 +38,9 @@ namespace WebShop.Services.Implementations
             feedback.CreatedAt = DateTime.UtcNow;
             feedback.UpdatedAt = DateTime.UtcNow;
 
+            if (feedback.User == null || feedback.Product == null)
+                throw new NotFoundException("Один из параметров не найден");
+
             if (await _feedbackRepository.IsExists(feedback))
             {
                 throw new AlreadyExistsException($"Отзыв к {feedback.Product.Id} от {feedback.User.Id} уже существует");
@@ -120,6 +123,9 @@ namespace WebShop.Services.Implementations
         {
             Feedback feedback = await MapFromDto(feedbackDto);
             feedback.UpdatedAt = DateTime.UtcNow;
+
+            if (feedback.User == null || feedback.Product == null)
+                throw new NotFoundException("Один из параметров не найден");
 
             if (await _feedbackRepository.UpdateAsync(feedback))
             {

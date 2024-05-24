@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebShop.Data;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 
@@ -64,8 +65,13 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<bool> UpdateAsync(Comment comment)
         {
-            _db.Comments.Update(comment);
-            return await SaveAsync();
+            if (_db.Comments.Any(c => c.Id == comment.Id))
+            {
+                _db.Comments.Update(comment);
+                return await SaveAsync();
+            }
+            else
+                throw new NotFoundException($"Комментарий {comment.Id} не найден");
         }
     }
 }

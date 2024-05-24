@@ -63,7 +63,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpGet("byUser/{userId}")]
@@ -87,7 +87,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpPost]
@@ -101,6 +101,10 @@ namespace WebShop.Controllers
                 //log
                 return Ok();
             }
+            catch (NotFoundException ex) 
+            {
+                return NotFound(ex.Message);
+            }
             catch (AlreadyExistsException ex)
             {
                 //log
@@ -111,10 +115,17 @@ namespace WebShop.Controllers
         [Authorize]
         public async Task<IActionResult> Update(FeedbackW feedbackDto)
         {
-            if (!await _feedbackService.UpdateAsync(feedbackDto))
-                return StatusCode(500, "Internal Server Error");
-            //log
-            return Ok();
+            try
+            {
+                if (!await _feedbackService.UpdateAsync(feedbackDto))
+                    return StatusCode(500, "Internal Server Error");
+                //log
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         [HttpDelete("{feedbackId}")]
         [Authorize]
@@ -130,7 +141,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(501, ex.Message);
+                return NotFound(ex.Message);
             }
         }
     }

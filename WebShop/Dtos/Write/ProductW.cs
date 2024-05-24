@@ -1,4 +1,5 @@
-﻿namespace WebShop.Dtos.Write
+﻿
+namespace WebShop.Dtos.Write
 {
     public class ProductW
     {

@@ -34,6 +34,10 @@ namespace WebShop.Services.Implementations
         public async Task<bool> AddAsync(CommentW commentDto)
         {
             Comment comment = await MapFromDto(commentDto);
+
+            if (comment.User == null || comment.Product == null || comment.Feedback == null)
+                throw new NotFoundException("Один из параметров не найден");
+
             comment.CreatedAt = DateTime.UtcNow;
             comment.UpdatedAt = DateTime.UtcNow;
 
@@ -126,18 +130,31 @@ namespace WebShop.Services.Implementations
             Comment comment = await MapFromDto(commentDto);
             comment.UpdatedAt = DateTime.UtcNow;
 
+            if (comment.User == null || comment.Product == null || comment.Feedback == null)
+                throw new NotFoundException("Один из параметров не найден");
+
             return await _commentRepository.UpdateAsync(comment);
         }
         private async Task<Comment> MapFromDto(CommentW commentDto)
         {
+            Comment parentComment;
+            if (commentDto.ParentCommentId != 0)
+            {
+                parentComment = await _commentRepository.GetAsync(commentDto.ParentCommentId);
+                if (parentComment == null || parentComment.Product.Id != commentDto.ProductId)
+                    throw new NotFoundException("Некорретно введен parentCommentId");
+
+            }
+            else
+                parentComment = null;
+
             Comment comment = new Comment
             {
                 Id = commentDto.Id,
                 Text = commentDto.Text,
                 User = await _userManager.FindByIdAsync(commentDto.UserId),
                 Feedback = await _feedbackRepository.GetAsync(commentDto.FeedbackId),
-                ParentComment = commentDto.ParentCommentId == 0 ? null
-                        : await _commentRepository.GetAsync(commentDto.ParentCommentId),
+                ParentComment = parentComment,
                 Product = await _productRepository.GetAsync(commentDto.ProductId),
             };
             return comment;

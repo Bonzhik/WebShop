@@ -5,8 +5,8 @@ namespace WebShop.Services.Interfaces
 {
     public interface ICartService
     {
-        Task<bool> ClearAsync(string userId);
+        Task<CartR> ClearAsync(string userId);
         Task<CartR> GetAsync(string userId);
-        Task<bool> UpdateAsync(CartW cart);
+        Task<CartR> UpdateAsync(CartW cart);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Linq.Dynamic.Core;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
@@ -96,7 +97,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpGet("bySubategory")]
@@ -126,7 +127,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpGet("search")]
@@ -153,15 +154,18 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Add(ProductW productDto)
+        public async Task<IActionResult> Add([FromForm] ProductW productDto)
         {
+            foreach (var key in HttpContext.Request.Form.Keys)
+            {
+                _logger.LogInformation($"Form key: {key}, value: {HttpContext.Request.Form[key]}");
+            }
+
             _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
             _logger.LogInformation("The user has made a request to create a product!");
             try
@@ -171,16 +175,19 @@ namespace WebShop.Controllers
                 _logger.LogInformation("The user has successfully added the product!");
                 return Ok("Success");
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (AlreadyExistsException ex)
             {
                 _logger.LogInformation($"The user was unable to add the product! Error: {ex.Message}");
                 return StatusCode(501, ex.Message);
             }
         }
-        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(ProductW productDto)
+        public async Task<IActionResult> Update([FromForm] ProductW productDto)
         {
             _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
             _logger.LogInformation("The user made a request to edit the product!");
@@ -191,13 +198,16 @@ namespace WebShop.Controllers
                 _logger.LogInformation("The user has successfully updated the product!");
                 return Ok("Success");
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (AlreadyExistsException ex)
             {
                 _logger.LogInformation($"The user was unable to update the product! Error: {ex.Message}");
                 return StatusCode(501, ex.Message);
             }
         }
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{productId}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int productId)

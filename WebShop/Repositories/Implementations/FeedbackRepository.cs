@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebShop.Data;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 
@@ -67,8 +68,13 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<bool> UpdateAsync(Feedback feedback)
         {
-            _db.Feedbacks.Update(feedback);
-            return await SaveAsync();
+            if (_db.Feedbacks.Any(f => f.Id == feedback.Id))
+            {
+                _db.Feedbacks.Update(feedback);
+                return await SaveAsync();
+            }
+            else
+                throw new NotFoundException($"Отзыв {feedback.Id} не найден");
         }
     }
 }

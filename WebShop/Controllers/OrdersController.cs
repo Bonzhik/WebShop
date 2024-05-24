@@ -10,13 +10,12 @@ namespace WebShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Buyer")]
     [EnableCors]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
         private readonly ILogger _logger;
-        public OrdersController(IOrderService orderService, ILogger logger)
+        public OrdersController(IOrderService orderService, ILogger<OrdersController> logger)
         {
             _orderService = orderService;
             _logger = logger;
@@ -56,7 +55,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 _logger.LogInformation($"The user could not receive the list of orders! Error: {ex.Message}");
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -74,6 +73,10 @@ namespace WebShop.Controllers
 
                 _logger.LogInformation("The user has successfully created an order!");
                 return Ok("Success");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (NotEnoughProductException ex)
             {
@@ -99,7 +102,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 _logger.LogInformation($"The user was unable to delete the order! Error: {ex.Message}");
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpPut]
@@ -112,9 +115,9 @@ namespace WebShop.Controllers
                     return StatusCode(500, "Internal Server Error");
                 //log
                 return Ok("Success");
-            } catch (NotEnoughProductException ex)
+            } catch (NotFoundException ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 

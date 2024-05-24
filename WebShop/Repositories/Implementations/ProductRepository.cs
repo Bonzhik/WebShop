@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebShop.Data;
+using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 
@@ -40,8 +41,12 @@ namespace WebShop.Repositories.Implementations
         }
         public async Task<bool> UpdateAsync(Product product)
         {
-            _db.Products.Update(product);
-            return await SaveAsync();
+            if (_db.Products.Any(p => p.Id == product.Id))
+            {
+                _db.Products.Update(product);
+                return await SaveAsync();
+            }else 
+                throw new NotFoundException($"Продукт {product.Id} не найден");
         }
         public async Task<bool> DeleteAsync(Product product)
         {

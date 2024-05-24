@@ -45,15 +45,20 @@ namespace WebShop.Controllers
             _logger.LogInformation("The user makes a request to update the shopping cart!");
             try
             {
-                if (!await _cartService.UpdateAsync(cartW))
+                var cart = await _cartService.UpdateAsync(cartW);
+                if (cart == null)
                     return StatusCode(500, "Internal Server Error");
                 _logger.LogInformation("The user was unable to update the shopping cart!");
-                return Ok("Success");
+                return Ok(cart);
             }
             catch (NotEnoughProductException ex)
             {
                 _logger.LogInformation($"The user makes a request to update the shopping cart! Error: {ex.Message}");
                 return StatusCode(503, ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpPost("clear/{userId}")]
@@ -64,16 +69,17 @@ namespace WebShop.Controllers
             _logger.LogInformation("The user has sent a request to clear the shopping cart!");
             try
             {
-                if (!await _cartService.ClearAsync(userId))
+                var cart = await _cartService.ClearAsync(userId);
+                if ( cart == null)
                     return StatusCode(500, "Internal Server Error");
 
                 _logger.LogInformation("The user has successfully cleared the shopping cart!");
-                return Ok("Success");
+                return Ok(cart);
             }
             catch (NotFoundException ex)
             {
                 _logger.LogInformation($"The user was unable to empty the shopping cart! Error: {ex.Message}");
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
     }

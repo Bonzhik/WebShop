@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
 using WebShop.Data;
 using WebShop.Helpers;
 using WebShop.Logger;
-using WebShop.Migrations;
 using WebShop.Models;
 using WebShop.Services.Interfaces;
 
@@ -76,10 +74,6 @@ using (var scope = app.Services.CreateScope())
     {
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
-
-    //dbContext.Database.Migrate();
-   
-
 }
 
 app.UseSwagger();

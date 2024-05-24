@@ -43,6 +43,9 @@ namespace WebShop.Services.Implementations
             if (await _productRepository.IsExists(product))
                 throw new AlreadyExistsException($"Продукт {productDto.Title} уже существует");
 
+            if (product.Subcategory == null)
+                throw new NotFoundException($"Подкатегория {product.Subcategory.Id} не найдена");
+
             if (productDto.Image != null)
                 product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
 
@@ -54,9 +57,7 @@ namespace WebShop.Services.Implementations
             Product product = await _productRepository.GetAsync(productId);
 
             if (product == null)
-            {
                 throw new NotFoundException($"Отзыв {productId} не найден");
-            }
 
             return await _productRepository.DeleteAsync(product);
         }
@@ -67,9 +68,7 @@ namespace WebShop.Services.Implementations
             List<ProductR> productDtos = new List<ProductR>();
 
             foreach (Product product in products)
-            {
                 productDtos.Add(await MapToDto(product));
-            }
 
             return productDtos;
         }
@@ -95,9 +94,7 @@ namespace WebShop.Services.Implementations
                 List<Product> products = await _productRepository.GetByCategoryAsync(category);
 
                 foreach (Product product in products)
-                {
                     productDtos.Add(await MapToDto(product));
-                }
             }
 
             return productDtos;
@@ -116,9 +113,7 @@ namespace WebShop.Services.Implementations
                     throw new NotFoundException($"Подкатегория {subcategoryId} не найдена");
 
                 foreach (Product product in products)
-                {
                     productDtos.Add(await MapToDto(product));
-                }
             }
 
             return productDtos;
@@ -130,9 +125,7 @@ namespace WebShop.Services.Implementations
             List<ProductR> productDtos = new List<ProductR>();
 
             foreach (var product in products)
-            {
                 productDtos.Add((await MapToDto(product)));
-            }
 
             return productDtos;
         }
@@ -143,9 +136,7 @@ namespace WebShop.Services.Implementations
             List<ProductR> productDtos = new List<ProductR>();
 
             foreach (Product product in products)
-            {
                 productDtos.Add(await MapToDto(product));
-            }
 
             return productDtos;
         }
@@ -153,6 +144,9 @@ namespace WebShop.Services.Implementations
         public async Task<bool> UpdateAsync(ProductW productDto)
         {
             Product product = await MapFromDto(productDto);
+
+            if (product.Subcategory == null)
+                throw new NotFoundException($"Подкатегория {product.Subcategory.Id} не найдена");
 
             if (await _productRepository.IsExists(product))
                 throw new AlreadyExistsException($"Продукт {productDto.Title} уже существует");
@@ -174,10 +168,18 @@ namespace WebShop.Services.Implementations
 
             foreach (var attribute in productDto.AttributeValues)
             {
+                var attributeEntity = await _attributeRepository.GetAsync(attribute.Key);
+
+                if (attributeEntity == null)
+                    throw new NotFoundException($"Не удалось найти атрибут {attribute.Key}");
+
+                if (!product.Subcategory.Category.Attributes.Any(a => a.Id == attribute.Key))
+                    throw new NotFoundException($"В категории {product.Subcategory.Category.Title} нет атрибута {attribute.Key}");
+
                 product.AttributeValues.Add(new AttributeValue()
                 {
                     Product = product,
-                    Attribute = await _attributeRepository.GetAsync(attribute.Key),
+                    Attribute = attributeEntity,
                     Value = attribute.Value
                 });
             }

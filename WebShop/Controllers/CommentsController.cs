@@ -64,7 +64,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpGet("byComment/{commentId}")]
@@ -87,7 +87,7 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpGet("byUser/{userId}")]
@@ -111,26 +111,40 @@ namespace WebShop.Controllers
             catch (NotFoundException ex)
             {
                 //log
-                return StatusCode(502, ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Add(CommentW comment)
         {
-            if (!await _commentService.AddAsync(comment))
-                return StatusCode(500, "Internal Server Error");
-            //log
-            return Ok();
+            try
+            {
+                if (!await _commentService.AddAsync(comment))
+                    return StatusCode(500, "Internal Server Error");
+                //log
+                return Ok();
+            }catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
         }
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> Update(CommentW comment)
         {
-            if (!await _commentService.UpdateAsync(comment))
-                return StatusCode(500, "Internal Server Error");
-            //log
-            return Ok();
+            try
+            {
+                if (!await _commentService.UpdateAsync(comment))
+                    return StatusCode(500, "Internal Server Error");
+                //log
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         [HttpDelete("{commentId}")]
         [Authorize]
