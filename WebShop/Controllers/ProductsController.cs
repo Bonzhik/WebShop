@@ -161,11 +161,6 @@ namespace WebShop.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] ProductW productDto)
         {
-            foreach (var key in HttpContext.Request.Form.Keys)
-            {
-                _logger.LogInformation($"Form key: {key}, value: {HttpContext.Request.Form[key]}");
-            }
-
             _logger.LogInformation($"Request. Path: {HttpContext.Request.Path}{HttpContext.Request.QueryString}");
             _logger.LogInformation("The user has made a request to create a product!");
             try
