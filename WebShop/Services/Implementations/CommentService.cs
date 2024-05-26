@@ -50,7 +50,7 @@ namespace WebShop.Services.Implementations
 
             if (comment == null)
             {
-                throw new NotFoundException($"Отзыв {commentId} не найден");
+                throw new NotFoundException($"Комментарий {commentId} не найден");
             }
 
             return await _commentRepository.DeleteAsync(comment);

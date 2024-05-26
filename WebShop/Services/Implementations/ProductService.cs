@@ -57,7 +57,7 @@ namespace WebShop.Services.Implementations
             Product product = await _productRepository.GetAsync(productId);
 
             if (product == null)
-                throw new NotFoundException($"Отзыв {productId} не найден");
+                throw new NotFoundException($"Продукт {productId} не найден");
 
             return await _productRepository.DeleteAsync(product);
         }
@@ -155,6 +155,10 @@ namespace WebShop.Services.Implementations
                 product.ImageUrl = await _imageService.UploadPhoto(productDto.Image);
 
             var currentProduct = await _productRepository.GetNoTrackAsync(productDto.Id);
+
+            if (currentProduct == null)
+                throw new NotFoundException($"Продукт {product.Id} не найден");
+
             product.ImageUrl = currentProduct.ImageUrl;
 
             return await _productRepository.UpdateAsync(product);

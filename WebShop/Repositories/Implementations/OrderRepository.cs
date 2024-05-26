@@ -21,13 +21,14 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(Order order)
         {
-            _db.Orders.Remove(order);
+            order.IsDeleted = true;
+            _db.Orders.Update(order);
             return await SaveAsync();
         }
 
         public async Task<List<Order>> GetAllAsync()
         {
-            return await _db.Orders.ToListAsync();
+            return await _db.Orders.Where(c => c.IsDeleted == false).ToListAsync();
         }
 
         public async Task<Order> GetAsync(int id)
@@ -37,7 +38,7 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<List<Order>> GetByUserAsync(User user)
         {
-            return await _db.Orders.Where(o => o.User.Equals(user)).ToListAsync();
+            return await _db.Orders.Where(o => o.User.Equals(user)).Where(c => c.IsDeleted == false).ToListAsync();
         }
 
         public async Task<bool> SaveAsync()

@@ -17,5 +17,6 @@ namespace WebShop.Models
         public DateTime UpdatedAt { get; set; }
         public decimal TotalPrice { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public bool IsDeleted { get; set; } = false;
     }
 }

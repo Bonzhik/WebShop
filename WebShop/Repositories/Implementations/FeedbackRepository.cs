@@ -23,13 +23,14 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(Feedback feedback)
         {
-            _db.Feedbacks.Remove(feedback);
+            feedback.IsDeleted = true;
+            _db.Feedbacks.Update(feedback);
             return await SaveAsync();
         }
 
         public async Task<List<Feedback>> GetAllAsync()
         {
-            return await _db.Feedbacks.ToListAsync();
+            return await _db.Feedbacks.Where(c => c.IsDeleted == false).ToListAsync();
         }
 
         public async Task<Feedback> GetAsync(int id)
@@ -39,7 +40,7 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<List<Feedback>> GetByProductAsync(Product product)
         {
-            return await _db.Feedbacks.Where(f => f.Product.Equals(product)).ToListAsync();
+            return await _db.Feedbacks.Where(f => f.Product.Equals(product)).Where(c => c.IsDeleted == false).ToListAsync();
         }
 
         public async Task<List<Feedback>> GetByUserAsync(User user)

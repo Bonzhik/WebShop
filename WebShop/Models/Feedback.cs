@@ -17,5 +17,6 @@ namespace WebShop.Models
         [Required]
         public virtual Product Product { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public bool IsDeleted { get; set; } = false;
     }
 }

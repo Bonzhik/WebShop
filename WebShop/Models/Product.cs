@@ -24,5 +24,6 @@ namespace WebShop.Models
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
         public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
         public virtual ICollection<AttributeValue> AttributeValues { get; set; } = new List<AttributeValue>();
+        public bool IsDeleted { get; set; } = false;
     }
 }

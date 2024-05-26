@@ -16,7 +16,7 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _db.Products.ToListAsync();
+            return await _db.Products.Where(c => c.IsDeleted == false).ToListAsync();
         }
         public async Task<Product> GetAsync(int id)
         {
@@ -28,11 +28,11 @@ namespace WebShop.Repositories.Implementations
         }
         public async Task<List<Product>> GetBySubcategoryAsync(Subcategory subcategory)
         {
-            return await _db.Products.Where(p => p.Subcategory.Equals(subcategory)).ToListAsync();
+            return await _db.Products.Where(p => p.Subcategory.Equals(subcategory)).Where(c => c.IsDeleted == false).ToListAsync();
         }
         public async Task<List<Product>> GetByCategoryAsync(Category category)
         {
-            return await _db.Products.Where(p => p.Subcategory.Category.Equals(category)).ToListAsync();
+            return await _db.Products.Where(p => p.Subcategory.Category.Equals(category)).Where(c => c.IsDeleted == false).ToListAsync();
         }
         public async Task<bool> AddAsync(Product product)
         {
@@ -50,7 +50,8 @@ namespace WebShop.Repositories.Implementations
         }
         public async Task<bool> DeleteAsync(Product product)
         {
-            _db.Products.Remove(product);
+            product.IsDeleted = true;
+            _db.Products.Update(product);
             return await SaveAsync();
         }
         public async Task<bool> SaveAsync()
@@ -80,12 +81,12 @@ namespace WebShop.Repositories.Implementations
 
         public async Task<List<Product>> Search(string search)
         {
-            return await _db.Products.Where(p => EF.Functions.Like(p.Title, $"%{search}%")).ToListAsync();
+            return await _db.Products.Where(p => EF.Functions.Like(p.Title, $"%{search}%")).Where(c => c.IsDeleted == false).ToListAsync();
         }
 
         public async Task<List<Product>> GetLatest()
         {
-            return await _db.Products.OrderByDescending(p => p.CreatedAt).Take(10).ToListAsync();
+            return await _db.Products.Where(c => c.IsDeleted == false).OrderByDescending(p => p.CreatedAt).Take(10).ToListAsync();
         }
     }
 }

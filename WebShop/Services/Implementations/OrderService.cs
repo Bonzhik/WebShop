@@ -59,7 +59,7 @@ namespace WebShop.Services.Implementations
 
             if (order == null)
             {
-                throw new NotFoundException($"Отзыв {orderId} не найден");
+                throw new NotFoundException($"Заказ {orderId} не найден");
             }
 
             return await _orderRepository.DeleteAsync(order);

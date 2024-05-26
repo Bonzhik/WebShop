@@ -19,5 +19,6 @@ namespace WebShop.Models
         public virtual Feedback Feedback { get; set; }
         public virtual Comment? ParentComment { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public bool IsDeleted { get; set; } = false;
     }
 }

@@ -67,11 +67,13 @@ namespace WebShop.Services.Implementations
         {
             Cart cart = await MapFromDto(cartDto);
 
+            var itemsToRemove = new List<CartProduct>();
+
             foreach (var orderItem in cart.CartProducts)
             {
                 if (orderItem.Quantity <= 0)
                 {
-                    await _cartRepository.DeleteItemAsync(orderItem);
+                    itemsToRemove.Add(orderItem);
                     continue;
                 }
                 if (_productRepository.CheckEnoughProduct(orderItem.Product, orderItem.Quantity) == false)
@@ -79,6 +81,12 @@ namespace WebShop.Services.Implementations
                     throw new NotEnoughProductException($"Недостаточно товаров {orderItem.Product.Title}");
                 }
             }
+
+            foreach (var item in itemsToRemove)
+            {
+                cart.CartProducts.Remove(item);
+            }
+
             await _cartRepository.UpdateAsync(cart);
             var cartR = await GetAsync(cartDto.UserId);
             return cartR;
