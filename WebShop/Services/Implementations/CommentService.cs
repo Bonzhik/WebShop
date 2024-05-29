@@ -82,6 +82,7 @@ namespace WebShop.Services.Implementations
                 throw new NotFoundException($"Отзыв {feedbackId} не существует");
 
             List<Comment> comments = await _commentRepository.GetByFeedBackAsync(feedback);
+            comments = comments.Where(c => c.ParentComment == null).ToList();
 
             List<CommentR> commentDtos = new List<CommentR>();
             foreach (var comment in comments)
