@@ -6,11 +6,11 @@ namespace WebShop.Repositories.Interfaces
     {
         Task<Product> GetAsync(int id);
         Task<Product> GetNoTrackAsync(int id);
-        Task<List<Product>> GetAllAsync();
-        Task<List<Product>> GetBySubcategoryAsync(Subcategory subcategory);
-        Task<List<Product>> GetByCategoryAsync(Category category);
+        Task<IQueryable<Product>> GetAllAsync();
+        Task<IQueryable<Product>> GetBySubcategoryAsync(Subcategory subcategory);
+        Task<IQueryable<Product>> GetByCategoryAsync(Category category);
         Task<List<Product>> GetLatest();
-        Task<List<Product>> Search(string search);
+        Task<IQueryable<Product>> Search(string search);
         Task<bool> AddAsync(Product product);
         Task<bool> UpdateAsync(Product product);
         Task<bool> DeleteAsync(Product product);

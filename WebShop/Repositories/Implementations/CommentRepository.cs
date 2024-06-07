@@ -26,9 +26,9 @@ namespace WebShop.Repositories.Implementations
             return await SaveAsync();
         }
 
-        public async Task<List<Comment>> GetAllAsync()
+        public async Task<IQueryable<Comment>> GetAllAsync()
         {
-            return await _db.Comments.Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Comments.Where(c => c.IsDeleted == false);
         }
 
         public async Task<Comment> GetAsync(int id)
@@ -36,18 +36,18 @@ namespace WebShop.Repositories.Implementations
             return await _db.Comments.FindAsync(id);
         }
 
-        public async Task<List<Comment>> GetByFeedBackAsync(Feedback feedback)
+        public async Task<IQueryable<Comment>> GetByFeedBackAsync(Feedback feedback)
         {
-            return await _db.Comments.Where(c => c.Feedback.Equals(feedback)).Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Comments.Where(c => c.Feedback.Equals(feedback)).Where(c => c.IsDeleted == false || c.ParentComment == null);
         }
 
-        public async Task<List<Comment>> GetByUserAsync(User user)
+        public async Task<IQueryable<Comment>> GetByUserAsync(User user)
         {
-            return await _db.Comments.Where(c => c.User.Equals(user)).ToListAsync();
+            return _db.Comments.Where(c => c.User.Equals(user));
         }
-        public async Task<List<Comment>> GetByParentCommentAsync(Comment comment)
+        public async Task<IQueryable<Comment>> GetByParentCommentAsync(Comment comment)
         {
-            return await _db.Comments.Where(c => c.ParentComment.Equals(comment)).Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Comments.Where(c => c.ParentComment.Equals(comment)).Where(c => c.IsDeleted == false);
         }
 
         public async Task<bool> SaveAsync()

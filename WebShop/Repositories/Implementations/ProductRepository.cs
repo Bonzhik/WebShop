@@ -14,9 +14,9 @@ namespace WebShop.Repositories.Implementations
             _db = db;
         }
 
-        public async Task<List<Product>> GetAllAsync()
+        public async Task<IQueryable<Product>> GetAllAsync()
         {
-            return await _db.Products.Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Products.Where(c => c.IsDeleted == false);
         }
         public async Task<Product> GetAsync(int id)
         {
@@ -26,13 +26,13 @@ namespace WebShop.Repositories.Implementations
         {
             return await _db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         }
-        public async Task<List<Product>> GetBySubcategoryAsync(Subcategory subcategory)
+        public async Task<IQueryable<Product>> GetBySubcategoryAsync(Subcategory subcategory)
         {
-            return await _db.Products.Where(p => p.Subcategory.Equals(subcategory)).Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Products.Where(p => p.Subcategory.Equals(subcategory)).Where(c => c.IsDeleted == false);
         }
-        public async Task<List<Product>> GetByCategoryAsync(Category category)
+        public async Task<IQueryable<Product>> GetByCategoryAsync(Category category)
         {
-            return await _db.Products.Where(p => p.Subcategory.Category.Equals(category)).Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Products.Where(p => p.Subcategory.Category.Equals(category)).Where(c => c.IsDeleted == false);
         }
         public async Task<bool> AddAsync(Product product)
         {
@@ -79,9 +79,9 @@ namespace WebShop.Repositories.Implementations
                 AnyAsync(p => p.Title.ToLower() == product.Title.ToLower() && p.Id != product.Id);
         }
 
-        public async Task<List<Product>> Search(string search)
+        public async Task<IQueryable<Product>> Search(string search)
         {
-            return await _db.Products.Where(p => EF.Functions.Like(p.Title, $"%{search}%")).Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Products.Where(p => EF.Functions.Like(p.Title, $"%{search}%")).Where(c => c.IsDeleted == false);
         }
 
         public async Task<List<Product>> GetLatest()

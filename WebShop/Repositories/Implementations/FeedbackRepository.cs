@@ -28,9 +28,9 @@ namespace WebShop.Repositories.Implementations
             return await SaveAsync();
         }
 
-        public async Task<List<Feedback>> GetAllAsync()
+        public async Task<IQueryable<Feedback>> GetAllAsync()
         {
-            return await _db.Feedbacks.Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Feedbacks.Where(c => c.IsDeleted == false);
         }
 
         public async Task<Feedback> GetAsync(int id)
@@ -38,14 +38,14 @@ namespace WebShop.Repositories.Implementations
             return await _db.Feedbacks.FindAsync(id);
         }
 
-        public async Task<List<Feedback>> GetByProductAsync(Product product)
+        public async Task<IQueryable<Feedback>> GetByProductAsync(Product product)
         {
-            return await _db.Feedbacks.Where(f => f.Product.Equals(product)).Where(c => c.IsDeleted == false).ToListAsync();
+            return _db.Feedbacks.Where(f => f.Product.Equals(product)).Where(c => c.IsDeleted == false);
         }
 
-        public async Task<List<Feedback>> GetByUserAsync(User user)
+        public async Task<IQueryable<Feedback>> GetByUserAsync(User user)
         {
-            return await _db.Feedbacks.Where(f => f.User.Equals(user)).ToListAsync();
+            return _db.Feedbacks.Where(f => f.User.Equals(user));
         }
 
         public async Task<bool> IsExists(Feedback feedback)

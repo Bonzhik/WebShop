@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
+using WebShop.Services.PaginationService;
 
 namespace WebShop.Services.Implementations
 {
@@ -15,6 +17,7 @@ namespace WebShop.Services.Implementations
         private readonly IFeedbackRepository _feedbackRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IPaginationService<Comment> _paginationsService;
         private readonly IMapper _mapper;
         public CommentService
             (
@@ -22,7 +25,8 @@ namespace WebShop.Services.Implementations
             UserManager<User> userManager,
             IFeedbackRepository feedbackRepository,
             IProductRepository productRepository,
-            IMapper mapper
+            IMapper mapper,
+            IPaginationService<Comment> paginationsService
             )
         {
             _commentRepository = commentRepository;
@@ -30,6 +34,7 @@ namespace WebShop.Services.Implementations
             _feedbackRepository = feedbackRepository;
             _productRepository = productRepository;
             _mapper = mapper;
+            _paginationsService = paginationsService;
         }
         public async Task<bool> AddAsync(CommentW commentDto)
         {
@@ -56,14 +61,22 @@ namespace WebShop.Services.Implementations
             return await _commentRepository.DeleteAsync(comment);
         }
 
-        public async Task<List<CommentR>> GetAllAsync()
+        public async Task<PaginationResponse<CommentR>> GetAllAsync(int page, int pageSize)
         {
-            List<Comment> comments = await _commentRepository.GetAllAsync();
+            PaginationResponse<Comment> comments = _paginationsService.Paginate(await _commentRepository.GetAllAsync(), page, pageSize);
 
-            List<CommentR> commentDtos = new List<CommentR>();
-            foreach (var comment in comments)
+            PaginationResponse<CommentR> commentDtos = new PaginationResponse<CommentR>
             {
-                commentDtos.Add(MapToDto(comment));
+                Page = comments.Page,
+                PageSize = comments.PageSize,
+                TotalCount = comments.TotalCount,
+                HasNextPage = comments.HasNextPage,
+                HasPrevPage = comments.HasPrevPage,
+                Data = new List<CommentR>()
+            };
+            foreach (var comment in comments.Data)
+            {
+                commentDtos.Data.Add(MapToDto(comment));
             }
             return commentDtos;
         }
@@ -74,54 +87,77 @@ namespace WebShop.Services.Implementations
             return MapToDto(comment);
         }
 
-        public async Task<List<CommentR>> GetByFeedbackAsync(int feedbackId)
+        public async Task<PaginationResponse<CommentR>> GetByFeedbackAsync(int feedbackId, int page, int pageSize)
         {
             Feedback feedback = await _feedbackRepository.GetAsync(feedbackId);
 
             if (feedback == null)
                 throw new NotFoundException($"Отзыв {feedbackId} не существует");
 
-            List<Comment> comments = await _commentRepository.GetByFeedBackAsync(feedback);
-            comments = comments.Where(c => c.ParentComment == null).ToList();
+            PaginationResponse<Comment> comments = _paginationsService.Paginate(await _commentRepository.GetByFeedBackAsync(feedback), page, pageSize);
 
-            List<CommentR> commentDtos = new List<CommentR>();
-            foreach (var comment in comments)
+            PaginationResponse<CommentR> commentDtos = new PaginationResponse<CommentR>
             {
-                commentDtos.Add(MapToDto(comment));
+                Page = comments.Page,
+                PageSize = comments.PageSize,
+                TotalCount = comments.TotalCount,
+                HasNextPage = comments.HasNextPage,
+                HasPrevPage = comments.HasPrevPage,
+                Data = new List<CommentR>()
+            };
+            foreach (var comment in comments.Data)
+            {
+                commentDtos.Data.Add(MapToDto(comment));
             }
             return commentDtos;
         }
 
-        public async Task<List<CommentR>> GetByParentCommentAsync(int parentCommentId)
+        public async Task<PaginationResponse<CommentR>> GetByParentCommentAsync(int parentCommentId, int page, int pageSize)
         {
             Comment parentComment = await _commentRepository.GetAsync(parentCommentId);
 
             if (parentComment == null)
                 throw new NotFoundException($"Отзыв {parentCommentId} не существует");
 
-            List<Comment> comments = await _commentRepository.GetByParentCommentAsync(parentComment);
+            PaginationResponse<Comment> comments = _paginationsService.Paginate(await _commentRepository.GetByParentCommentAsync(parentComment), page, pageSize);
 
-            List<CommentR> commentDtos = new List<CommentR>();
-            foreach (var comment in comments)
+            PaginationResponse<CommentR> commentDtos = new PaginationResponse<CommentR>
             {
-                commentDtos.Add(MapToDto(comment));
+                Page = comments.Page,
+                PageSize = comments.PageSize,
+                TotalCount = comments.TotalCount,
+                HasNextPage = comments.HasNextPage,
+                HasPrevPage = comments.HasPrevPage,
+                Data = new List<CommentR>()
+            };
+            foreach (var comment in comments.Data)
+            {
+                commentDtos.Data.Add(MapToDto(comment));
             }
             return commentDtos;
         }
 
-        public async Task<List<CommentR>> GetByUserAsync(string userId)
+        public async Task<PaginationResponse<CommentR>> GetByUserAsync(string userId, int page, int pageSize)
         {
             User user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
                 throw new NotFoundException($"Отзыв {userId} не существует");
 
-            List<Comment> comments = await _commentRepository.GetByUserAsync(user);
+            PaginationResponse<Comment> comments = _paginationsService.Paginate(await _commentRepository.GetByUserAsync(user), page, pageSize);
 
-            List<CommentR> commentDtos = new List<CommentR>();
-            foreach (var comment in comments)
+            PaginationResponse<CommentR> commentDtos = new PaginationResponse<CommentR>
             {
-                commentDtos.Add(MapToDto(comment));
+                Page = comments.Page,
+                PageSize = comments.PageSize,
+                TotalCount = comments.TotalCount,
+                HasNextPage = comments.HasNextPage,
+                HasPrevPage = comments.HasPrevPage,
+                Data = new List<CommentR>()
+            };
+            foreach (var comment in comments.Data)
+            {
+                commentDtos.Data.Add(MapToDto(comment));
             }
             return commentDtos;
         }

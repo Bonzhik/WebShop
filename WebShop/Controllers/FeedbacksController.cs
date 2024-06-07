@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
+using WebShop.Models;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;
 using WebShop.Services.SortingService;
@@ -16,17 +17,14 @@ namespace WebShop.Controllers
     public class FeedbacksController : ControllerBase
     {
         private readonly IFeedbackService _feedbackService;
-        private readonly IPaginationService<FeedbackR> _paginationService;
         private readonly ISortingService<FeedbackR> _sortingService;
         public FeedbacksController
             (
             IFeedbackService feedbackService,
-            IPaginationService<FeedbackR> paginationService,
             ISortingService<FeedbackR> sortingService
             )
         {
             _feedbackService = feedbackService;
-            _paginationService = paginationService;
             _sortingService = sortingService;
         }
         [HttpGet]
@@ -35,8 +33,7 @@ namespace WebShop.Controllers
                                              string? sortField = null,
                                              string? sortOrder = null)
         {
-            List<FeedbackR> feedbacks = await _feedbackService.GetAllAsync();
-            PaginationResponse<FeedbackR> result = _paginationService.Paginate(feedbacks, page, pageSize);
+            PaginationResponse<FeedbackR> result = await _feedbackService.GetAllAsync(page, pageSize);
 
             if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                 result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -52,8 +49,7 @@ namespace WebShop.Controllers
         {
             try
             {
-                List<FeedbackR> feedbacks = await _feedbackService.GetByProductAsync(productId);
-                PaginationResponse<FeedbackR> result = _paginationService.Paginate(feedbacks, page, pageSize);
+                PaginationResponse<FeedbackR> result = await _feedbackService.GetByProductAsync(productId, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -76,8 +72,7 @@ namespace WebShop.Controllers
         {
             try
             {
-                List<FeedbackR> feedbacks = await _feedbackService.GetByUserAsync(userId);
-                PaginationResponse<FeedbackR> result = _paginationService.Paginate(feedbacks, page, pageSize);
+                PaginationResponse<FeedbackR> result = await _feedbackService.GetByUserAsync(userId, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);

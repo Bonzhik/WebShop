@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
 using WebShop.Models;
+using WebShop.Repositories.Implementations;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
+using WebShop.Services.PaginationService;
 
 namespace WebShop.Services.Implementations
 {
@@ -16,6 +19,7 @@ namespace WebShop.Services.Implementations
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly IAttributeRepository _attributeRepository;
+        private readonly IPaginationService<Product> _paginationsService;
         private readonly IImageService _imageService;
 
         public ProductService
@@ -25,6 +29,7 @@ namespace WebShop.Services.Implementations
             ICategoryRepository categoryRepository,
             IAttributeRepository attributeRepository,
             IImageService imageService,
+            IPaginationService<Product> paginationsService,
             IMapper mapper
             )
         {
@@ -33,6 +38,7 @@ namespace WebShop.Services.Implementations
             _categoryRepository = categoryRepository;
             _attributeRepository = attributeRepository;
             _imageService = imageService;
+            _paginationsService = paginationsService;
             _mapper = mapper;
         }
 
@@ -62,14 +68,23 @@ namespace WebShop.Services.Implementations
             return await _productRepository.DeleteAsync(product);
         }
 
-        public async Task<List<ProductR>> GetAllAsync()
+        public async Task<PaginationResponse<ProductR>> GetAllAsync(int page, int pageSize)
         {
-            List<Product> products = await _productRepository.GetAllAsync();
-            List<ProductR> productDtos = new List<ProductR>();
+            PaginationResponse<Product> products = _paginationsService.Paginate(await _productRepository.GetAllAsync(), page, pageSize);
 
-            foreach (Product product in products)
-                productDtos.Add(await MapToDto(product));
-
+            PaginationResponse<ProductR> productDtos = new PaginationResponse<ProductR>
+            {
+                Page = products.Page,
+                PageSize = products.PageSize,
+                TotalCount = products.TotalCount,
+                HasNextPage = products.HasNextPage,
+                HasPrevPage = products.HasPrevPage,
+                Data = new List<ProductR>()
+            };
+            foreach (var product in products.Data)
+            {
+                productDtos.Data.Add(await MapToDto(product));
+            }
             return productDtos;
         }
 
@@ -79,41 +94,51 @@ namespace WebShop.Services.Implementations
             return await MapToDto(productDto);
         }
 
-        public async Task<List<ProductR>> GetByCategoryAsync(int[] categoryId)
+        public async Task<PaginationResponse<ProductR>> GetByCategoryAsync(int[] categoryId, int page, int pageSize)
         {
+            IQueryable<Product> query = await _productRepository.GetAllAsync();
 
-            List<ProductR> productDtos = new List<ProductR>();
+            query = query.Where(p => categoryId.Contains(p.Subcategory.Category.Id) && !p.IsDeleted);
 
-            foreach (var cat in categoryId)
+            var products = _paginationsService.Paginate(query, page, pageSize);
+
+            var productDtos = new PaginationResponse<ProductR>
             {
-                Category category = await _categoryRepository.GetAsync(cat);
-
-                if (category == null)
-                    throw new NotFoundException($"Категория {categoryId} не найдена");
-
-                List<Product> products = await _productRepository.GetByCategoryAsync(category);
-
-                foreach (Product product in products)
-                    productDtos.Add(await MapToDto(product));
+                Page = products.Page,
+                PageSize = products.PageSize,
+                TotalCount = products.TotalCount,
+                HasNextPage = products.HasNextPage,
+                HasPrevPage = products.HasPrevPage,
+                Data = new List<ProductR>()
+            };
+            foreach (var product in products.Data)
+            {
+                productDtos.Data.Add(await MapToDto(product));
             }
 
             return productDtos;
         }
 
-        public async Task<List<ProductR>> GetBySubcategoryAsync(int[] subcategoryId)
+        public async Task<PaginationResponse<ProductR>> GetBySubcategoryAsync(int[] subcategoryId, int page, int pageSize)
         {
-            List<ProductR> productDtos = new List<ProductR>();
+            IQueryable<Product> query = await _productRepository.GetAllAsync();
 
-            foreach (var subcat in subcategoryId)
+            query = query.Where(p => subcategoryId.Contains(p.Subcategory.Id) && !p.IsDeleted);
+
+            var products = _paginationsService.Paginate(query, page, pageSize);
+
+            var productDtos = new PaginationResponse<ProductR>
             {
-                Subcategory subcategory = await _subcategoryRepository.GetAsync(subcat);
-                List<Product> products = await _productRepository.GetBySubcategoryAsync(subcategory);
-
-                if (subcategory == null)
-                    throw new NotFoundException($"Подкатегория {subcategoryId} не найдена");
-
-                foreach (Product product in products)
-                    productDtos.Add(await MapToDto(product));
+                Page = products.Page,
+                PageSize = products.PageSize,
+                TotalCount = products.TotalCount,
+                HasNextPage = products.HasNextPage,
+                HasPrevPage = products.HasPrevPage,
+                Data = new List<ProductR>()
+            };
+            foreach (var product in products.Data)
+            {
+                productDtos.Data.Add(await MapToDto(product));
             }
 
             return productDtos;
@@ -130,14 +155,23 @@ namespace WebShop.Services.Implementations
             return productDtos;
         }
 
-        public async Task<List<ProductR>> Search(string search)
+        public async Task<PaginationResponse<ProductR>> Search(string search, int page, int pageSize)
         {
-            var products = await _productRepository.Search(search);
-            List<ProductR> productDtos = new List<ProductR>();
+            PaginationResponse<Product> products = _paginationsService.Paginate(await _productRepository.Search(search), page, pageSize);
 
-            foreach (Product product in products)
-                productDtos.Add(await MapToDto(product));
-
+            PaginationResponse<ProductR> productDtos = new PaginationResponse<ProductR>
+            {
+                Page = products.Page,
+                PageSize = products.PageSize,
+                TotalCount = products.TotalCount,
+                HasNextPage = products.HasNextPage,
+                HasPrevPage = products.HasPrevPage,
+                Data = new List<ProductR>()
+            };
+            foreach (var product in products.Data)
+            {
+                productDtos.Data.Add(await MapToDto(product));
+            }
             return productDtos;
         }
 

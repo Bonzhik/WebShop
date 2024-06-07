@@ -6,9 +6,9 @@ namespace WebShop.Services.Interfaces
     public interface IFeedbackService
     {
         Task<FeedbackR> GetAsync(int id);
-        Task<List<FeedbackR>> GetAllAsync();
-        Task<List<FeedbackR>> GetByUserAsync(string userId);
-        Task<List<FeedbackR>> GetByProductAsync(int productId);
+        Task<PaginationResponse<FeedbackR>> GetAllAsync(int page, int pageSize);
+        Task<PaginationResponse<FeedbackR>> GetByUserAsync(string userId, int page, int pageSize);
+        Task<PaginationResponse<FeedbackR>> GetByProductAsync(int productId, int page, int pageSize);
         Task<bool> AddAsync(FeedbackW feedback);
         Task<bool> UpdateAsync(FeedbackW feedback);
         Task<bool> DeleteAsync(int feedbackId);

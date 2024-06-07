@@ -6,10 +6,10 @@ namespace WebShop.Services.Interfaces
     public interface IProductService
     {
         Task<ProductR> GetAsync(int id);
-        Task<List<ProductR>> GetAllAsync();
-        Task<List<ProductR>> GetBySubcategoryAsync(int[] subcategoryId);
-        Task<List<ProductR>> GetByCategoryAsync(int[] categoryId);
-        Task<List<ProductR>> Search(string search);
+        Task<PaginationResponse<ProductR>> GetAllAsync(int page, int pageSize);
+        Task<PaginationResponse<ProductR>> GetBySubcategoryAsync(int[] subcategoryId, int page, int pageSize);
+        Task<PaginationResponse<ProductR>> GetByCategoryAsync(int[] categoryId, int page, int pageSize);
+        Task<PaginationResponse<ProductR>> Search(string search, int page, int pageSize);
         Task<List<ProductR>> GetLatest();
         Task<bool> AddAsync(ProductW product);
         Task<bool> UpdateAsync(ProductW product);

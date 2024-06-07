@@ -4,6 +4,6 @@ namespace WebShop.Services.PaginationService
 {
     public interface IPaginationService<T>
     {
-        PaginationResponse<T> Paginate(List<T> data, int page, int pageSize);
+        PaginationResponse<T> Paginate(IQueryable<T> data, int page, int pageSize);
     }
 }

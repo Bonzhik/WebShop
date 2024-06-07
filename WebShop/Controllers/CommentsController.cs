@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.Design;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
+using WebShop.Models;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;
 using WebShop.Services.SortingService;
@@ -16,17 +18,14 @@ namespace WebShop.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly ICommentService _commentService;
-        private readonly IPaginationService<CommentR> _paginationsService;
         private readonly ISortingService<CommentR> _sortingService;
         public CommentsController
             (
             ICommentService commentService,
-            IPaginationService<CommentR> paginationService,
             ISortingService<CommentR> sortingService,
             ILogger<CommentsController> logger
             )
         {
-            _paginationsService = paginationService;
             _commentService = commentService;
             _sortingService = sortingService;
         }
@@ -36,8 +35,7 @@ namespace WebShop.Controllers
                                              string? sortField = null,
                                              string? sortOrder = null)
         {
-            List<CommentR> comments = await _commentService.GetAllAsync();
-            PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
+            PaginationResponse<CommentR> result = await _commentService.GetAllAsync(page, pageSize);
 
             if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                 result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -53,8 +51,7 @@ namespace WebShop.Controllers
         {
             try
             {
-                List<CommentR> comments = await _commentService.GetByFeedbackAsync(feedbackId);
-                PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
+                PaginationResponse<CommentR> result = await _commentService.GetByFeedbackAsync(feedbackId, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -76,8 +73,7 @@ namespace WebShop.Controllers
         {
             try
             {
-                List<CommentR> comments = await _commentService.GetByParentCommentAsync(commentId);
-                PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
+                PaginationResponse<CommentR> result = await _commentService.GetByParentCommentAsync(commentId, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -100,8 +96,7 @@ namespace WebShop.Controllers
         {
             try
             {
-                List<CommentR> comments = await _commentService.GetByUserAsync(userId);
-                PaginationResponse<CommentR> result = _paginationsService.Paginate(comments, page, pageSize);
+                PaginationResponse<CommentR> result = await _commentService.GetByUserAsync(userId, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);

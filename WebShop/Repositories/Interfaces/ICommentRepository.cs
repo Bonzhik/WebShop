@@ -5,10 +5,10 @@ namespace WebShop.Repositories.Interfaces
     public interface ICommentRepository
     {
         Task<Comment> GetAsync(int id);
-        Task<List<Comment>> GetAllAsync();
-        Task<List<Comment>> GetByUserAsync(User user);
-        Task<List<Comment>> GetByFeedBackAsync(Feedback feedback);
-        Task<List<Comment>> GetByParentCommentAsync(Comment comment);
+        Task<IQueryable<Comment>> GetAllAsync();
+        Task<IQueryable<Comment>> GetByUserAsync(User user);
+        Task<IQueryable<Comment>> GetByFeedBackAsync(Feedback feedback);
+        Task<IQueryable<Comment>> GetByParentCommentAsync(Comment comment);
         Task<bool> AddAsync(Comment comment);
         Task<bool> UpdateAsync(Comment comment);
         Task<bool> DeleteAsync(Comment comment);

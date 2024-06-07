@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
 using WebShop.Models;
 using WebShop.Repositories.Interfaces;
 using WebShop.Services.Interfaces;
+using WebShop.Services.PaginationService;
 
 namespace WebShop.Services.Implementations
 {
@@ -15,6 +17,7 @@ namespace WebShop.Services.Implementations
         private readonly IFeedbackRepository _feedbackRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IPaginationService<Feedback> _paginationsService;
         private readonly IMapper _mapper;
         public FeedbackService
             (
@@ -22,6 +25,7 @@ namespace WebShop.Services.Implementations
             IFeedbackRepository feedbackRepository,
             ICommentRepository commentRepository,
             IProductRepository productRepository,
+            IPaginationService<Feedback> paginationsService,
             IMapper mapper
             )
         {
@@ -29,6 +33,7 @@ namespace WebShop.Services.Implementations
             _feedbackRepository = feedbackRepository;
             _commentRepository = commentRepository;
             _productRepository = productRepository;
+            _paginationsService = paginationsService;
             _mapper = mapper;
         }
 
@@ -67,14 +72,22 @@ namespace WebShop.Services.Implementations
             return await _feedbackRepository.DeleteAsync(feedback);
         }
 
-        public async Task<List<FeedbackR>> GetAllAsync()
+        public async Task<PaginationResponse<FeedbackR>> GetAllAsync(int page, int pageSize)
         {
-            List<Feedback> feedbacks = await _feedbackRepository.GetAllAsync();
+            PaginationResponse<Feedback> feedbacks = _paginationsService.Paginate(await _feedbackRepository.GetAllAsync(), page, pageSize);
 
-            List<FeedbackR> feedbackDtos = new List<FeedbackR>();
-            foreach (var feedback in feedbacks)
+            PaginationResponse<FeedbackR> feedbackDtos = new PaginationResponse<FeedbackR>
             {
-                feedbackDtos.Add(MapToDto(feedback));
+                Page = feedbacks.Page,
+                PageSize = feedbacks.PageSize,
+                TotalCount = feedbacks.TotalCount,
+                HasNextPage = feedbacks.HasNextPage,
+                HasPrevPage = feedbacks.HasPrevPage,
+                Data = new List<FeedbackR>()
+            };
+            foreach (var feedback in feedbacks.Data)
+            {
+                feedbackDtos.Data.Add(MapToDto(feedback));
             }
             return feedbackDtos;
         }
@@ -85,36 +98,52 @@ namespace WebShop.Services.Implementations
             return MapToDto(feedback);
         }
 
-        public async Task<List<FeedbackR>> GetByProductAsync(int productId)
+        public async Task<PaginationResponse<FeedbackR>> GetByProductAsync(int productId, int page, int pageSize)
         {
             Product product = await _productRepository.GetAsync(productId);
 
             if (product == null)
                 throw new NotFoundException($"Продукт {productId} не найден");
 
-            List<Feedback> feedbacks = await _feedbackRepository.GetByProductAsync(product);
+            PaginationResponse<Feedback> feedbacks = _paginationsService.Paginate(await _feedbackRepository.GetByProductAsync(product), page, pageSize);
 
-            List<FeedbackR> feedbackDtos = new List<FeedbackR>();
-            foreach (var feedback in feedbacks)
+            PaginationResponse<FeedbackR> feedbackDtos = new PaginationResponse<FeedbackR>
             {
-                feedbackDtos.Add(MapToDto(feedback));
+                Page = feedbacks.Page,
+                PageSize = feedbacks.PageSize,
+                TotalCount = feedbacks.TotalCount,
+                HasNextPage = feedbacks.HasNextPage,
+                HasPrevPage = feedbacks.HasPrevPage,
+                Data = new List<FeedbackR>()
+            };
+            foreach (var feedback in feedbacks.Data)
+            {
+                feedbackDtos.Data.Add(MapToDto(feedback));
             }
             return feedbackDtos;
         }
 
-        public async Task<List<FeedbackR>> GetByUserAsync(string userId)
+        public async Task<PaginationResponse<FeedbackR>> GetByUserAsync(string userId, int page, int pageSize)
         {
             User user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
                 throw new NotFoundException($"Пользователь {userId} не найден");
 
-            List<Feedback> feedbacks = await _feedbackRepository.GetByUserAsync(user);
+            PaginationResponse<Feedback> feedbacks = _paginationsService.Paginate(await _feedbackRepository.GetByUserAsync(user), page, pageSize);
 
-            List<FeedbackR> feedbackDtos = new List<FeedbackR>();
-            foreach (var feedback in feedbacks)
+            PaginationResponse<FeedbackR> feedbackDtos = new PaginationResponse<FeedbackR>
             {
-                feedbackDtos.Add(MapToDto(feedback));
+                Page = feedbacks.Page,
+                PageSize = feedbacks.PageSize,
+                TotalCount = feedbacks.TotalCount,
+                HasNextPage = feedbacks.HasNextPage,
+                HasPrevPage = feedbacks.HasPrevPage,
+                Data = new List<FeedbackR>()
+            };
+            foreach (var feedback in feedbacks.Data)
+            {
+                feedbackDtos.Data.Add(MapToDto(feedback));
             }
             return feedbackDtos;
         }
@@ -157,7 +186,7 @@ namespace WebShop.Services.Implementations
         }
         private async Task<double> CalcRating(Product product)
         {
-            List<Feedback> feedbacks = await _feedbackRepository.GetByProductAsync(product);
+            IQueryable<Feedback> feedbacks = await _feedbackRepository.GetByProductAsync(product);
             double rating = Math.Round(feedbacks.Average(x => x.Rating), 1);
 
             product.Rating = rating;

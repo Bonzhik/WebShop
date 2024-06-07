@@ -6,6 +6,7 @@ using System.Linq.Dynamic.Core;
 using WebShop.Dtos.Read;
 using WebShop.Dtos.Write;
 using WebShop.Exceptions;
+using WebShop.Models;
 using WebShop.Services.ImageService;
 using WebShop.Services.Interfaces;
 using WebShop.Services.PaginationService;
@@ -19,19 +20,16 @@ namespace WebShop.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IPaginationService<ProductR> _paginationService;
         private readonly ISortingService<ProductR> _sortingService;
         private readonly ILogger _logger;
         public ProductsController
             (
             IProductService productService,
             IImageService imageService,
-            IPaginationService<ProductR> paginationService,
             ISortingService<ProductR> sortingService,
             ILogger<ProductsController> logger)
         {
             _productService = productService;
-            _paginationService = paginationService;
             _sortingService = sortingService;
             _logger = logger;
         }
@@ -55,9 +53,8 @@ namespace WebShop.Controllers
                                                 int minPrice = 1,
                                                 int maxPrice = 300000)
         {
-            List<ProductR> products = await _productService.GetAllAsync();
-            products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
-            PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
+            PaginationResponse<ProductR> result = await _productService.GetAllAsync(page, pageSize);
+            result.Data = result.Data.Where(p => p.Price > minPrice && p.Price < maxPrice).ToList();
 
             if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                 result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -84,9 +81,8 @@ namespace WebShop.Controllers
 
             try
             {
-                List<ProductR> products = await _productService.GetByCategoryAsync(categoryId);
-                products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
-                PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
+                PaginationResponse<ProductR> result = await _productService.GetByCategoryAsync(categoryId, page, pageSize);
+                result.Data = result.Data.Where(p => p.Price > minPrice && p.Price < maxPrice).ToList();
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -114,9 +110,8 @@ namespace WebShop.Controllers
 
             try
             {
-                List<ProductR> products = await _productService.GetBySubcategoryAsync(subcategoryId);
-                products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
-                PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
+                PaginationResponse<ProductR> result = await _productService.GetBySubcategoryAsync(subcategoryId, page, pageSize);
+                result.Data = result.Data.Where(p => p.Price > minPrice && p.Price < maxPrice).ToList();
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
@@ -142,8 +137,7 @@ namespace WebShop.Controllers
 
             try
             {
-                List<ProductR> products = await _productService.Search(search);
-                PaginationResponse<ProductR> result = _paginationService.Paginate(products, page, pageSize);
+                PaginationResponse<ProductR> result = await _productService.Search(search, page, pageSize);
 
                 if (!string.IsNullOrEmpty(sortField) && !string.IsNullOrEmpty(sortOrder))
                     result.Data = _sortingService.Sort(result.Data, sortField, sortOrder);
